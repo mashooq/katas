@@ -29,10 +29,13 @@ public class DigitToNumeralTest {
                 {7, "VII"},
                 {9, "IX"},
                 {11, "XI"},
-                {40, "LX"},
+                {40, "XL"},
                 {50, "L"},
                 {60, "LX"},
-                {90, "XC"}
+                {90, "XC"},
+                {369, "CCCLXIX"},
+                {448, "CDXLVIII"},
+                {1999, "MCMXCIX"}
              };
         return Arrays.asList(mappings);
     }
