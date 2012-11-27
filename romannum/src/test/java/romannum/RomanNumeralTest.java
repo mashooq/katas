@@ -9,20 +9,20 @@ import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static romannum.RomanNumeral.*;
 
 @RunWith(value = Parameterized.class)
-public class DigitToNumeralTest {
-
-    private int digit;
+public class RomanNumeralTest {
+    private int number;
     private String romanNumeral;
 
-    public DigitToNumeralTest(final int digit, final String romanNumeral) {
-        this.digit = digit;
+    public RomanNumeralTest(final int number, final String romanNumeral) {
+        this.number = number;
         this.romanNumeral = romanNumeral;
     }
 
     @Parameterized.Parameters
-    public static Collection<Object[]> digitToRomanMappings() {
+    public static Collection<Object[]> numberToRomanNumeralMappings() {
         Object[][] mappings = new Object[][] {
                 {1,"I"},
                 {10, "X"},
@@ -42,8 +42,8 @@ public class DigitToNumeralTest {
 
 
     @Test
-    public void convertToRoman() {
-        assertThat(RomanNumeral.convertToRoman(digit).toString(), is(romanNumeral));
+    public void convertToRomanNumeral() {
+        assertThat(convertToRoman(number).toString(), is(romanNumeral));
     }
 
 }
