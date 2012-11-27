@@ -1,17 +1,17 @@
 package romannum;
 
 public class RomanNumeral {
-    public static String convertToRoman(int digit) {
+    public static String convertToRoman(int numberToConvert) {
         String romanNumeral = "";
-        romanNumeral += constructRomanNumeral(digit / 1000 % 10, "M", "", "");
-        romanNumeral += constructRomanNumeral(digit / 100 % 10, "C", "D", "M");
-        romanNumeral += constructRomanNumeral(digit / 10 % 10, "X", "L", "C");
-        romanNumeral += constructRomanNumeral(digit % 10, "I", "V", "X");
+        romanNumeral += constructRomanNumeral(numberToConvert / 1000 % 10, "M", "", "");
+        romanNumeral += constructRomanNumeral(numberToConvert / 100 % 10, "C", "D", "M");
+        romanNumeral += constructRomanNumeral(numberToConvert / 10 % 10, "X", "L", "C");
+        romanNumeral += constructRomanNumeral(numberToConvert % 10, "I", "V", "X");
         return romanNumeral;
     }
 
-    private static String constructRomanNumeral(int times, String one, String five, String ten) {
-        switch (times) {
+    private static String constructRomanNumeral(int digit, String one, String five, String ten) {
+        switch (digit) {
             case 1: return one;
             case 2: return one + one;
             case 3: return one + one + one;
