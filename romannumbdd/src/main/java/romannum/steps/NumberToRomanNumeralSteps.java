@@ -8,23 +8,20 @@ import static org.junit.Assert.assertThat;
 
 public class NumberToRomanNumeralSteps {
     private Integer number;
-    private String expectedRomanNumeral;
     private String calculatedRomanNumeral;
 
-    @Given("a <Number> and it's corresponding <Roman Numeral>")
-    public void givenANumberAndItsCorrespondingRomanNumeral(@Named("Number") Integer number,
-                                                            @Named("Roman Numeral") String romanNumeral) {
+    @Given("a <Number>")
+    public void givenANumberAndItsCorrespondingRomanNumeral(@Named("Number") Integer number) {
         this.number = number;
-        this.expectedRomanNumeral = romanNumeral;
     }
 
-    @When("I convert from Number to Roman Numeral")
+    @When("I convert")
     public void whenIConvertFromNumberToRomanNumeral() {
-        this.calculatedRomanNumeral = RomanNumeralConverter.convertNumerToRomanNumeral(number);
+        this.calculatedRomanNumeral = RomanNumeralConverter.convertNumberToRomanNumeral(number);
     }
 
-    @Then("the corresponding Roman Numeral is provided")
-    public void thenTheCorrespondingRomanNumeralIsProvided() {
+    @Then("the <Roman Numeral> is provided")
+    public void thenTheCorrespondingRomanNumeralIsProvided(@Named("Roman Numeral") String expectedRomanNumeral) {
         assertThat(calculatedRomanNumeral, is(expectedRomanNumeral));
     }
 
