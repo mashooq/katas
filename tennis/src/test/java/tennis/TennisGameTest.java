@@ -71,4 +71,24 @@ public class TennisGameTest {
         assertThat(playerOne.getScore(), is(ADVANTAGE));
         assertThat(playerTwo.getScore(), is(DEUCE));
     }
+
+    @Test
+    public void whenAPlayerWithAdvantageScoresThenTheyWin() {
+        scores(playerOne, 3);
+        scores(playerTwo, 3);
+        scores(playerOne, 2);
+
+        assertThat(playerOne.getScore(), is(WIN));
+    }
+
+    @Test
+    public void whenAPlayerHasAdvantageAndTheOpponentScoresThenScoreIsDeuce() {
+        scores(playerOne, 3);
+        scores(playerTwo, 3);
+        scores(playerOne, 1);
+        scores(playerTwo, 1);
+
+        assertThat(playerOne.getScore(), is(DEUCE));
+        assertThat(playerTwo.getScore(), is(DEUCE));
+    }
 }
