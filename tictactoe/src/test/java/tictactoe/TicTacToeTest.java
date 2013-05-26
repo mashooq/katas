@@ -5,9 +5,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static tictactoe.TicTacToe.Player;
 import static tictactoe.TicTacToe.Player.O;
-import static tictactoe.TicTacToe.Player.X;
 
 public class TicTacToeTest {
 
@@ -15,33 +13,37 @@ public class TicTacToeTest {
 
     @Before
     public void setupGame() {
-       ticTacToe = new TicTacToe();
+        ticTacToe = new TicTacToe();
     }
 
     @Test
-    public void shouldCreateAGameWithAnEmptyGrid() {
+    public void shouldAlternateSymbolsBetweenComputerAndPerson() {
+        assertThat(ticTacToe.getComputerSymbol(), is(O));
+        ticTacToe.reset();
+        assertThat(ticTacToe.getPersonSymbol(), is(O));
+    }
+
+    @Test
+    public void shouldAlternateFirstTurnBetweenComputerAndPerson() {
+        assertThat(ticTacToe.isGameBoardEmpty(), is(false));
+        ticTacToe.reset();
         assertThat(ticTacToe.isGameBoardEmpty(), is(true));
     }
 
-    @Test
-    public void shouldAlternateTheFirstGameBetweenPlayers() {
-       assertThat(ticTacToe.getCurrentPlayer(), is(O));
-       ticTacToe.reset();
-       assertThat(ticTacToe.getCurrentPlayer(), is(X));
+    @Test(expected = RuntimeException.class)
+    public void shouldNotAllowAMoveToAlreadyOccupiedPlace() {
+        ticTacToe.makeMove(1, 1);
     }
 
     @Test
-    public void shouldMakeFistMoveWithMaximumWinningPositions() {
-        Player currentPlayer = ticTacToe.getCurrentPlayer();
-        ticTacToe.makeNextMove();
-        assertThat(ticTacToe.possibleWinningPositionsFor(currentPlayer), is(4));
-    }
+    public void shouldBeAbleToCalculateWinningPositions() {
+        ticTacToe.makeMove(0,0);
+        ticTacToe.makeMove(0,1);
 
-    @Test
-    public void shouldMakeSecondMoveWithMaximumPossibleWinningPositions() {
-        ticTacToe.makeNextMove();
-        Player currentPlayer = ticTacToe.getCurrentPlayer();
-        ticTacToe.makeNextMove();
-        assertThat(ticTacToe.possibleWinningPositionsFor(currentPlayer), is(2));
+        TicTacToe.Player person = ticTacToe.getPersonSymbol();
+        TicTacToe.Player computer = ticTacToe.getComputerSymbol();
+
+        assertThat(ticTacToe.calculateWinningPositions(person), is(4));
+        assertThat(ticTacToe.calculateWinningPositions(computer), is(4));
     }
 }
