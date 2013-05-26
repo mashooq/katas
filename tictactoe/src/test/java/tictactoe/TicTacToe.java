@@ -8,10 +8,11 @@ import java.util.Map;
 import static tictactoe.TicTacToe.Player.*;
 
 public class TicTacToe {
+    public enum Player {O, X}
     private Player computerSymbol = O;
     private Player personSymbol = X;
-    private Player currentPlayer = computerSymbol;
     private Player[][] gameBoard = new Player[3][3];
+
     private boolean playerHasFirstTurn = false;
 
     public TicTacToe() {
@@ -39,17 +40,6 @@ public class TicTacToe {
         if (gameBoard[row][col] != null) throw new RuntimeException("Illegal Move!");
         gameBoard[row][col] = getPersonSymbol();
     }
-
-    public enum Player {O, X}
-
-    public enum WinningPosition {D1, D2, V1, V2, V3, H1, H2, H3}
-
-    public Map<Player, List<WinningPosition>> winningPositions =
-            new HashMap<Player, List<WinningPosition>>() {{
-                put(Player.O, new ArrayList<WinningPosition>());
-                put(Player.X, new ArrayList<WinningPosition>());
-            }};
-
     public boolean isGameBoardEmpty() {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
