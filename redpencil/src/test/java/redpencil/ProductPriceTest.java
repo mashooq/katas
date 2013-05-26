@@ -70,4 +70,13 @@ public class ProductPriceTest {
 
         assertThat(product.getPrice(), is(40));
     }
+
+    @Test
+    public void  afterThirtyDaysOfStealDealRPPPromotionIsDeactivated() {
+        product.reducePriceByPercentage(7);
+        product.activateStealDealPromotion();
+        product.setElapsedDays(31);
+
+        assertThat(product.isRedPencilPromotionActive(), is(false));
+    }
 }

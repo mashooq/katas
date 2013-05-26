@@ -12,7 +12,11 @@ public class Product {
 
 
     public int getPrice() {
-        int priceAfterDiscount = calculateDiscount(price, percentageReduction);
+        int priceAfterDiscount = price;
+        if (elapsedDays <= 30) {
+            priceAfterDiscount = calculateDiscount(price, percentageReduction);
+        }
+
         if (stealDealPromotionActive) {
             priceAfterDiscount = calculateStealDealDiscount(priceAfterDiscount);
         }
@@ -25,7 +29,7 @@ public class Product {
         } else if (elapsedDays <= 30) {
             priceAfterDiscount = calculateDiscount(priceAfterDiscount, 30);
         } else {
-            priceAfterDiscount = calculateDiscount(price, 60);
+            priceAfterDiscount = calculateDiscount(priceAfterDiscount, 60);
         }
         return priceAfterDiscount;
     }
@@ -39,7 +43,7 @@ public class Product {
     }
 
     public boolean isRedPencilPromotionActive() {
-        return percentageReduction >= 5;
+        return percentageReduction >= 5 && elapsedDays <= 30;
     }
 
     public void activateStealDealPromotion() {
