@@ -79,4 +79,14 @@ public class ProductPriceTest {
 
         assertThat(product.isRedPencilPromotionActive(), is(false));
     }
+
+    @Test
+    public void  increasingThePriceOfAProductOnStealDealHasNoEffect() {
+        product.reducePriceByPercentage(7);
+        product.activateStealDealPromotion();
+        product.setElapsedDays(10);
+        product.setPrice(120);
+
+        assertThat(product.getPrice(), is(79));
+    }
 }

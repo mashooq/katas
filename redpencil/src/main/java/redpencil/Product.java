@@ -60,4 +60,9 @@ public class Product {
     public void setElapsedDays(int elapsedDays) {
         this.elapsedDays = elapsedDays;
     }
+
+    public void setPrice(int price) {
+        if (!isStealDealPromotionActive())
+            this.price = price;
+    }
 }
