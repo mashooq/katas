@@ -1,4 +1,4 @@
-package redpencil;
+package promotions;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,8 +27,12 @@ public class ProductPriceTest {
     }
 
     @Test
-    public void shouldActivateRedPencilPromotionWhenReducedBy5PercentOrMore() {
+    public void shouldActivateRPPWhenReducedByOver5PercentForMoreThan5Days() {
+        product.reducePriceByPercentage(4);
+        assertThat(product.isRedPencilPromotionActive(), is(false));
+
         product.reducePriceByPercentage(6);
+        product.setPriceReductionElapsedDays(6);
         assertThat(product.isRedPencilPromotionActive(), is(true));
     }
 
@@ -40,6 +44,7 @@ public class ProductPriceTest {
     @Test
     public void stealDealIsOnlyAppliedToRedPencil() {
         product.reducePriceByPercentage(4);
+        product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
         assertThat(product.isStealDealPromotionActive(), is(false));
     }
@@ -47,6 +52,7 @@ public class ProductPriceTest {
     @Test
     public void first15DaysStealDealTakes15PercentOffPrice() {
         product.reducePriceByPercentage(7);
+        product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
         product.setElapsedDays(10);
 
@@ -56,6 +62,7 @@ public class ProductPriceTest {
     @Test
     public void  eleventhToThirtyDaysOfStealDealDealTakes30PercentOffPrice() {
         product.reducePriceByPercentage(7);
+        product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
         product.setElapsedDays(20);
 
@@ -65,6 +72,7 @@ public class ProductPriceTest {
     @Test
     public void  afterThirtyDaysOfStealDealTake30PercentOffOriginalPrice() {
         product.reducePriceByPercentage(7);
+        product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
         product.setElapsedDays(31);
 
@@ -74,6 +82,7 @@ public class ProductPriceTest {
     @Test
     public void  afterThirtyDaysOfStealDealRPPPromotionIsDeactivated() {
         product.reducePriceByPercentage(7);
+        product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
         product.setElapsedDays(31);
 
@@ -83,6 +92,7 @@ public class ProductPriceTest {
     @Test
     public void  increasingThePriceOfAProductOnStealDealHasNoEffect() {
         product.reducePriceByPercentage(7);
+        product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
         product.setElapsedDays(10);
         product.setPrice(120);

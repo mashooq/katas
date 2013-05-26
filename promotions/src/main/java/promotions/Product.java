@@ -1,10 +1,11 @@
-package redpencil;
+package promotions;
 
 public class Product {
     private int price;
     private int percentageReduction = 0;
     private boolean stealDealPromotionActive = false;
     private int elapsedDays;
+    private int priceReductionElapsedDays;
 
     public Product(int initialPrice) {
         this.price = initialPrice;
@@ -21,6 +22,10 @@ public class Product {
             priceAfterDiscount = calculateStealDealDiscount(priceAfterDiscount);
         }
         return priceAfterDiscount;
+    }
+
+    public void setPriceReductionElapsedDays(int priceReductionElapsedDays) {
+        this.priceReductionElapsedDays = priceReductionElapsedDays;
     }
 
     private int calculateStealDealDiscount(int priceAfterDiscount) {
@@ -43,8 +48,10 @@ public class Product {
     }
 
     public boolean isRedPencilPromotionActive() {
-        return percentageReduction >= 5 && elapsedDays <= 30;
+        return percentageReduction >= 5 && priceReductionElapsedDays > 5
+                && elapsedDays <= 30;
     }
+
 
     public void activateStealDealPromotion() {
         if (isRedPencilPromotionActive())
@@ -55,7 +62,6 @@ public class Product {
     public boolean isStealDealPromotionActive() {
         return stealDealPromotionActive;
     }
-
 
     public void setElapsedDays(int elapsedDays) {
         this.elapsedDays = elapsedDays;
