@@ -70,7 +70,7 @@ public class ProductPriceTest {
     }
 
     @Test
-    public void  afterThirtyDaysOfStealDealTake30PercentOffOriginalPrice() {
+    public void  afterThirtyDaysOfStealDealTake30PercentOffPrice() {
         product.reducePriceByPercentage(7);
         product.setPriceReductionElapsedDays(6);
         product.activateStealDealPromotion();
