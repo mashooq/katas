@@ -1,7 +1,5 @@
 package tictactoe;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
-
 import static tictactoe.Player.Empty;
 
 class GameBoard {

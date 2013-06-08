@@ -46,6 +46,14 @@ public class TicTacToeTest {
     }
 
     @Test
+    public void oppositionWithMultipleOneInARowHasScoreLessThan10AndMoreThan100() {
+        ticTacToe.makeMove(computer, 1, 1);
+        System.out.println(ticTacToe.calcluateScore(person));
+        assertTrue(ticTacToe.calcluateScore(person) < -10);
+        assertTrue(ticTacToe.calcluateScore(person) > -100);
+    }
+
+    @Test
     public void playerWithASingle_OneInARow_HasScoreMoreThan1AndLessThan10() {
         ticTacToe.makeMove(computer, 1, 1);
         ticTacToe.makeMove(person, 0, 0);
@@ -55,12 +63,37 @@ public class TicTacToeTest {
     }
 
     @Test
-    public void playerWithASingle_TwoInARow_HasScoreMoreThan100AndLessThan200() {
+    public void playerWithASingle_TwoInARow_HasScoreMoreThan100AndLessThan110() {
         ticTacToe.makeMove(computer, 1, 1);
         ticTacToe.makeMove(person, 0, 0);
         ticTacToe.makeMove(computer, 0, 1);
 
         assertTrue(ticTacToe.calcluateScore(computer) > 100);
+        assertTrue(ticTacToe.calcluateScore(computer) < 110);
+    }
+
+    @Test
+    public void playerWithAMultiple_TwoInARow_HasScoreMoreThan110AndLessThan200() {
+        ticTacToe.makeMove(computer, 1, 1);
+        ticTacToe.makeMove(person, 0, 0);
+        ticTacToe.makeMove(computer, 0, 2);
+        ticTacToe.makeMove(person, 0, 1);
+        ticTacToe.makeMove(computer, 1, 2);
+
+        assertTrue(ticTacToe.calcluateScore(computer) > 110);
         assertTrue(ticTacToe.calcluateScore(computer) < 200);
+    }
+
+    @Test
+    public void playerWithA_ThreeInARow_MoreThan200() {
+        ticTacToe.makeMove(computer, 1, 1);
+        ticTacToe.makeMove(person, 0, 0);
+        ticTacToe.makeMove(computer, 0, 2);
+        ticTacToe.makeMove(person, 0, 1);
+        ticTacToe.makeMove(computer, 1, 2);
+        ticTacToe.makeMove(person, 2, 0);
+        ticTacToe.makeMove(computer, 1, 0);
+
+        assertTrue(ticTacToe.calcluateScore(computer) > 200);
     }
 }
