@@ -2,12 +2,15 @@ package tictactoe;
 
 public class TicTacToe {
     private final GameBoard gameBoard = new GameBoard();
-    private Player firstPlayer = Player.O;
-    private Player secondPlayer = Player.X;
-    private Player nextTurn = firstPlayer;
+    private Player firstPlayer;
+    private Player secondPlayer;
+    private Player nextTurn;
 
 
-    public TicTacToe() {
+    public TicTacToe(Player firstPlayer, Player secondPlayer) {
+        this.firstPlayer = firstPlayer;
+        this.secondPlayer = secondPlayer;
+        this.nextTurn = firstPlayer;
         gameBoard.initialiseGameBoard();
     }
 

@@ -10,21 +10,21 @@ import static tictactoe.PlayerMove.move;
 
 public class TicTacToeTest {
     private TicTacToe ticTacToe;
-    private Player person;
-    private Player computer;
+    private Player person = Player.O;
+    private Player computer = Player.X;
 
     @Before
     public void setupGame() {
-        ticTacToe = new TicTacToe();
+        ticTacToe = new TicTacToe(computer, person);
         person = ticTacToe.getSecondPlayer();
         computer = ticTacToe.getFirstPlayer();
     }
 
     @Test
     public void shouldAlternateFirstTurnBetweenFirstAndSecondPlayer() {
-        assertThat(ticTacToe.getNextTurn(), is(Player.O));
+        assertThat(ticTacToe.getNextTurn(), is(computer));
         ticTacToe.reset();
-        assertThat(ticTacToe.getNextTurn(), is(Player.X));
+        assertThat(ticTacToe.getNextTurn(), is(person));
     }
 
     @Test(expected = RuntimeException.class)
@@ -35,8 +35,8 @@ public class TicTacToeTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldNotAllowOutOfTurnMove() {
-       assertThat(ticTacToe.getNextTurn(), is(Player.O));
-       ticTacToe.make(move(Player.X, 0, 0));
+       assertThat(ticTacToe.getNextTurn(), is(computer));
+       ticTacToe.make(move(person, 0, 0));
     }
 
     @Test
