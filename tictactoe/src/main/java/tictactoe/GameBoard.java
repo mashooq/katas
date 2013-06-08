@@ -1,5 +1,6 @@
 package tictactoe;
 
+import static tictactoe.PlayerMove.move;
 import static tictactoe.Player.Empty;
 
 class GameBoard {
@@ -13,20 +14,17 @@ class GameBoard {
         }
     }
 
-    public void makeMove(Player player, int row, int col) {
-        if (gameBoard[row][col] != Empty) throw new RuntimeException("Illegal Move!"); gameBoard[row][col] = player; }
-    public boolean isEmpty() {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                if (gameBoard[row][col] != Empty) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public void make(PlayerMove move) {
+        int row = move.getRow();
+        int col = move.getCol();
+
+        if (gameBoard[row][col] != Empty)
+            throw new RuntimeException("Illegal Move!");
+
+        gameBoard[row][col] = move.getPlayer();
     }
 
-   public int calculateScore(Player player) {
+    public int calculateScore(Player player) {
         int score = calculateHorizontal(player);
         score += calculateVertical(player);
         score += calculateDiagonalFromLeft(player);

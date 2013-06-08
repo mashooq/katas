@@ -23,10 +23,10 @@ public class TicTacToe {
         return secondPlayer;
     }
 
-    public void makeMove(Player player, int row, int col) {
-        if (player != nextTurn) throw new RuntimeException("Not your turn!");
+    public void make(PlayerMove move) {
+        if (move.getPlayer() != nextTurn) throw new RuntimeException("Not your turn!");
 
-        gameBoard.makeMove(player, row, col);
+        gameBoard.make(move);
         switchTurns();
     }
 
@@ -43,7 +43,7 @@ public class TicTacToe {
         nextTurn = nextTurn == firstPlayer ? secondPlayer : firstPlayer;
     }
 
-    public int calcluateScore(Player player) {
+    public int calculateScore(Player player) {
        return gameBoard.calculateScore(player);
     }
 }
