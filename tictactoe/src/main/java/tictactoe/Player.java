@@ -1,3 +1,5 @@
 package tictactoe;
 
-public enum Player {O, X, Empty}
+public interface Player {
+    public void takeTurn(GameBoard gameBoard);
+}

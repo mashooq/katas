@@ -1,27 +1,41 @@
 package tictactoe;
 
-import static tictactoe.PlayerMove.move;
-import static tictactoe.Player.Empty;
+import java.util.List;
+import java.util.Map;
 
 class GameBoard {
     private Player[][] gameBoard = new Player[3][3];
 
-    void initialiseGameBoard() {
+    public void initialiseGameBoard() {
         for (int row = 0; row < gameBoard.length; row++) {
             for (int col = 0; col < gameBoard.length; col++) {
-                gameBoard[row][col] = Empty;
+                gameBoard[row][col] = null;
             }
         }
     }
 
-    public void make(PlayerMove move) {
+    public GameBoard clone() {
+        GameBoard clone = new GameBoard();
+        for (int row = 0; row < gameBoard.length; row++) {
+            for (int col = 0; col < gameBoard.length; col++) {
+                clone.gameBoard[row][col] = gameBoard[row][col];
+            }
+        }
+        return clone;
+    }
+
+    public void make(Move move) {
         int row = move.getRow();
         int col = move.getCol();
 
-        if (gameBoard[row][col] != Empty)
+        if (positionOccupied(row, col))
             throw new RuntimeException("Illegal Move!");
 
         gameBoard[row][col] = move.getPlayer();
+    }
+
+    private boolean positionOccupied(int row, int col) {
+        return !empty(gameBoard[row][col]);
     }
 
     public int calculateScore(Player player) {
@@ -46,12 +60,16 @@ class GameBoard {
         double oppositionMarks = 0;
 
         for (int i = 0; i < 3; i++) {
-            if (row[i] == Empty) continue;
+            if (empty(row[i])) continue;
             else if (row[i] == player) playerMarks++;
             else oppositionMarks++ ;
         }
 
         return calculateScoreBaseOnPositions(playerMarks, oppositionMarks);
+    }
+
+    private boolean empty(Player player) {
+        return player == null;
     }
 
     private int calculateScoreBaseOnPositions(double playerMarks, double oppositionMarks) {
@@ -90,4 +108,7 @@ class GameBoard {
         return calculateRowScore(player, positionsInARow);
     }
 
+    public List<Move> calculateFutureMoveScores(Player player) {
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
 }
