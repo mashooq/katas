@@ -1,11 +1,15 @@
 package tictactoe;
 
-import java.util.List;
+import java.util.Collection;
 
-public class AutomatedPlayer implements Player {
+public class AutomatedPlayer extends Player {
+    public AutomatedPlayer(String symbol) {
+        super(symbol);
+    }
+
     @Override
     public void takeTurn(GameBoard gameBoard) {
-        List<Move> futureMoves = gameBoard.calculateFutureMoveScores(this);
+        Collection<Move> futureMoves = gameBoard.getAvailableMovesWithScores(this);
         Move bestMove = null;
 
         for (Move move : futureMoves) {
@@ -16,4 +20,5 @@ public class AutomatedPlayer implements Player {
 
         gameBoard.make(bestMove);
     }
+
 }

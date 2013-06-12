@@ -6,8 +6,10 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collection;
+
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static tictactoe.Move.move;
 
 public class GameBoardTest {
@@ -20,20 +22,8 @@ public class GameBoardTest {
 
     @Before
     public void setupGame() {
-        person = new Player() {
-            @Override
-            public void takeTurn(GameBoard gameBoard) {
-                gameBoard.make(personMove);
-            }
-        };
-
-        computer = new Player() {
-            @Override
-            public void takeTurn(GameBoard gameBoard) {
-                gameBoard.make(computerMove);
-            }
-        };
-
+        person = createPersonPlayer();
+        computer = createComputerPlayer();
         gameBoard = new GameBoard();
     }
 
@@ -41,16 +31,6 @@ public class GameBoardTest {
     public void shouldNotAllowAMoveToAlreadyOccupiedPlace() {
         computerMoves(0, 0);
         personMoves(0, 0);
-    }
-
-    private void computerMoves(int row, int col) {
-        computerMove = move(computer, row, col);
-        computer.takeTurn(gameBoard);
-    }
-
-    private void personMoves(int row, int col) {
-        personMove = move(person, row, col);
-        person.takeTurn(gameBoard);
     }
 
     @Test
@@ -103,7 +83,64 @@ public class GameBoardTest {
         personMoves(2, 0);
         computerMoves(1, 0);
 
-        assertTrue(gameBoard.calculateScore(computer) > 200);
+        assertThat(gameBoard.calculateScore(computer), isGreaterThan(200));
+    }
+
+    @Test
+    public void canCalculateAvailableMovesWithAssociatedScores() {
+        Collection<Move> futureMoves = gameBoard.getAvailableMovesWithScores(computer);
+        assertThat(futureMoves.size(), is(9));
+    }
+
+    @Test
+    public void canCalculatePlayedMoves() {
+        personMoves(0, 0);
+        computerMoves(1, 1);
+        Collection<Move> futureMoves = gameBoard.getPlayedMoves(computer);
+        assertThat(futureMoves.size(), is(2));
+    }
+
+    private void computerMoves(int row, int col) {
+        computerMove = move(computer, row, col);
+        computer.takeTurn(gameBoard);
+    }
+
+    private void personMoves(int row, int col) {
+        personMove = move(person, row, col);
+        person.takeTurn(gameBoard);
+    }
+
+    private Player createComputerPlayer() {
+        return new Player("Player Y") {
+            @Override
+            public void takeTurn(GameBoard gameBoard) {
+                gameBoard.make(computerMove);
+            }
+        };
+    }
+
+    private Player createPersonPlayer() {
+        return new Player("Player X") {
+            @Override
+            public void takeTurn(GameBoard gameBoard) {
+                gameBoard.make(personMove);
+            }
+        };
+    }
+
+    private Matcher<Integer> isGreaterThan(final Integer lowerValue) {
+        return new BaseMatcher<Integer>() {
+            @Override
+            public boolean matches(final Object value) {
+                final Integer score = (Integer) value;
+                return score > lowerValue;
+            }
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("value greather than ").appendValue(lowerValue);
+            }
+        };
     }
 
     private Matcher<Integer> isBetween(final Integer lowest, final Integer highest) {
@@ -113,6 +150,7 @@ public class GameBoardTest {
                 final Integer score = (Integer) value;
                 return score > lowest && score < highest;
             }
+
             @Override
             public void describeTo(final Description description) {
                 description.appendText("value between <" + lowest + " and " + highest + ">");
