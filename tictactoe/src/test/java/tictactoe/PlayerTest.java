@@ -12,7 +12,8 @@ public class PlayerTest {
     public void shouldGetThePlayersSymbol() {
         Player player = new Player(PLAYER_X) {
             @Override
-            public void takeTurn(GameBoard gameBoard) {}
+            public void takeTurn(GameBoard gameBoard) {
+            }
         };
 
         assertThat(player.getSymbol(), is(PLAYER_X));

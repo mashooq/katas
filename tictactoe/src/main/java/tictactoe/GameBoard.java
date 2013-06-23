@@ -7,6 +7,7 @@ import static tictactoe.Move.move;
 
 class GameBoard {
     private Player[][] gameBoard = new Player[3][3];
+    private Collection<Move> playedMoves = new ArrayList();
 
     public GameBoard clone() {
         GameBoard clone = new GameBoard();
@@ -26,6 +27,7 @@ class GameBoard {
             throw new RuntimeException("Illegal Move!");
 
         gameBoard[row][col] = move.getPlayer();
+        playedMoves.add(move);
     }
 
     private boolean positionOccupied(int row, int col) {
@@ -45,17 +47,8 @@ class GameBoard {
         return potentialMovesWithScores;
     }
 
-    public Collection<Move> getPlayedMoves(Player player) {
-        Collection<Move> potentialMovesWithScores = new ArrayList<Move>();
-        for (int row = 0; row < gameBoard.length; row++) {
-            for (int col = 0; col < gameBoard.length; col++) {
-                if (!empty(gameBoard[row][col])) {
-                    Move potentialMove = move(player, row, col);
-                    potentialMovesWithScores.add(potentialMove);
-                }
-            }
-        }
-        return potentialMovesWithScores;
+    public Collection<Move> getPlayedMoves() {
+        return playedMoves;
     }
 
     public int calculateScore(Player player) {
@@ -134,5 +127,9 @@ class GameBoard {
         clonedBoard.make(potentialMove);
         potentialMove.withScore(clonedBoard.calculateScore(player));
         return potentialMove;
+    }
+
+    public boolean isADraw() {
+        return getPlayedMoves().size() == 9;
     }
 }

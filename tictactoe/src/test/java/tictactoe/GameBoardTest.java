@@ -96,8 +96,25 @@ public class GameBoardTest {
     public void canCalculatePlayedMoves() {
         personMoves(0, 0);
         computerMoves(1, 1);
-        Collection<Move> futureMoves = gameBoard.getPlayedMoves(computer);
+        Collection<Move> futureMoves = gameBoard.getPlayedMoves();
         assertThat(futureMoves.size(), is(2));
+    }
+
+    @Test
+    public void canDetermineADraw() {
+        computerMoves(0, 0);
+        personMoves(0, 1);
+        computerMoves(0, 2);
+        personMoves(1, 0);
+        computerMoves(1, 1);
+        assertThat(gameBoard.isADraw(), is(false));
+
+        personMoves(1, 2);
+        computerMoves(2, 0);
+        personMoves(2, 1);
+        computerMoves(2, 2);
+        assertThat(gameBoard.isADraw(), is(true));
+
     }
 
     private void computerMoves(int row, int col) {
