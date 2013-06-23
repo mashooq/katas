@@ -1,7 +1,6 @@
 package tictactoe;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class TicTacToe {
     private final Player player1;
@@ -29,5 +28,19 @@ public class TicTacToe {
         }
 
         writer.println("It's a draw!");
+    }
+
+    public static void main(String[] args) {
+        GameBoard gameBoard = new GameBoard();
+
+        Reader reader = new InputStreamReader(System.in);
+        Writer writer = new OutputStreamWriter(System.out);
+        Player player1 = new InteractivePlayer("X", reader, writer);
+        Player player2 = new AutomatedPlayer("O");
+
+       TicTacToe ticTacToe = new TicTacToe(player1, player2, gameBoard, System.out);
+
+        ticTacToe.start();
+
     }
 }

@@ -34,7 +34,7 @@ public class InteractivePlayerTest {
 
     @Before
     public void setupPlayer() {
-        reader = new StringReader("8");
+        reader = new StringReader("3");
         writer = new StringWriter();
         player = new InteractivePlayer("X", reader, writer);
 
@@ -64,7 +64,7 @@ public class InteractivePlayerTest {
         ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
         verify(gameBoard).make(argumentCaptor.capture());
 
-        Move expectedMove = move(player, 2, 1);
+        Move expectedMove = move(player, 0, 2);
         assertThat(argumentCaptor.getValue(), is(expectedMove));
 
     }

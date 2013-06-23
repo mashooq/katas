@@ -24,10 +24,11 @@ public class InteractivePlayer extends Player {
     public void takeTurn(GameBoard gameBoard) {
         writer.print(displayBoard(gameBoard.getPlayedMoves()));
         writer.print("\nNext Move: ");
+        writer.flush();
 
         int receivedMove = reader.nextInt();
-        int row = receivedMove / 3;
-        int col = (receivedMove % 3) - 1;
+        int row = (receivedMove -1) / 3;
+        int col = (receivedMove - 1) % 3 ;
         gameBoard.make(move(this, row, col));
     }
 
