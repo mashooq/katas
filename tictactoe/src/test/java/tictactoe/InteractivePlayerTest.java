@@ -1,6 +1,7 @@
 package tictactoe;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -17,20 +18,19 @@ import java.util.Collection;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
 import static tictactoe.Move.move;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock
-    GameBoard gameBoard;
-
+    @Mock GameBoard gameBoard;
     Reader reader;
     StringWriter writer;
-    private InteractivePlayer player;
-    @Mock
-    Player opposition;
+    @Mock Player opposition;
+
+    InteractivePlayer player;
 
     @Before
     public void setupPlayer() {
@@ -49,11 +49,10 @@ public class InteractivePlayerTest {
         playedMoves.add(move(player, 1, 0));
         given(gameBoard.getPlayedMoves()).willReturn(playedMoves);
 
-
         player.takeTurn(gameBoard);
 
-
         String expectedBoard = "X|O|3\nX|5|6\n7|8|9\nNext Move: ";
+
         assertThat(writer.toString(), is(expectedBoard));
     }
 
@@ -66,6 +65,23 @@ public class InteractivePlayerTest {
 
         Move expectedMove = move(player, 0, 2);
         assertThat(argumentCaptor.getValue(), is(expectedMove));
+    }
 
+    @Test
+    @Ignore
+    public void promptsUserAgainIfTheMoveWasIllegal() {
+        Collection<Move> playedMoves = new ArrayList<Move>();
+        playedMoves.add(move(player, 0, 2));
+        playedMoves.add(move(opposition, 0, 1));
+        given(gameBoard.getPlayedMoves()).willReturn(playedMoves);
+
+        doThrow(RuntimeException.class).doNothing().when(gameBoard).make(move(player, 0, 2));
+
+        player.takeTurn(gameBoard);
+
+
+        String expectedBoard = "1|O|X\n4|5|6\n7|8|9\nNext Move: ";
+        expectedBoard += "Illegal Move! Try again: ";
+        assertThat(writer.toString(), is(expectedBoard));
     }
 }

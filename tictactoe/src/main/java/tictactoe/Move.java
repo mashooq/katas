@@ -47,7 +47,7 @@ public class Move {
 
     @Override
     public String toString() {
-        return "player: " + row + ", " + col;
+        return player.getSymbol() + ", " + row + ", " + col + ", " + score;
     }
 
 
