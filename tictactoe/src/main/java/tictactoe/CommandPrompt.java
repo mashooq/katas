@@ -6,6 +6,8 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Scanner;
 
+import static tictactoe.Move.move;
+
 public class CommandPrompt {
     final Scanner reader;
     final PrintWriter writer;
@@ -15,30 +17,25 @@ public class CommandPrompt {
         this.writer = new PrintWriter(writer);
     }
 
-    Move readMove(Player player) {
-        Move move = null;
-        boolean legalMoveMade = false;
-        while (!legalMoveMade) {
-            try {
-                int receivedMove = reader.nextInt();
-                int row = (receivedMove - 1) / 3;
-                int col = (receivedMove - 1) % 3;
-                move = Move.move(player, row, col);
-                legalMoveMade = true;
-            } catch (RuntimeException e) {
-                writer.print("Illegal Move! Try again: ");
-            }
-        }
-        return move;
+    public CommandPrompt(Scanner reader, PrintWriter writer) {
+        this.reader = reader;
+        this.writer = writer;
     }
 
-    void displayPrompt(String playedMoves) {
-        writer.print(playedMoves);
-        writer.print("\nNext Move: ");
+    public Move readMove(Player player) {
+        int receivedMove = reader.nextInt();
+        int row = (receivedMove - 1) / 3;
+        int col = (receivedMove - 1) % 3;
+        return move(player, row, col);
+    }
+
+    private void displayPrompt(String playedMoves) {
+        writer.println(playedMoves);
+        writer.println("Next Move: ");
         writer.flush();
     }
 
-    String displayBoard(Collection<Move> playedMoves) {
+    public void displayBoard(Collection<Move> playedMoves) {
         StringBuilder currentBoard = new StringBuilder();
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -52,7 +49,7 @@ public class CommandPrompt {
             }
             if (row < 2) currentBoard.append("\n");
         }
-        return currentBoard.toString();
+        displayPrompt(currentBoard.toString());
     }
 
     Move findMove(Collection<Move> playedMoves, int col, int row) {
@@ -63,5 +60,10 @@ public class CommandPrompt {
         }
 
         return null;
+    }
+
+    public void tryAgain() {
+        writer.println("Illegal Move! Try Again: ");
+        writer.flush();
     }
 }

@@ -1,87 +1,63 @@
 package tictactoe;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.stub;
 import static org.mockito.Mockito.verify;
 import static tictactoe.Move.move;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock GameBoard gameBoard;
-    Reader reader;
-    StringWriter writer;
-    @Mock Player opposition;
-
+    @Mock
+    GameBoard gameBoard;
+    @Mock
+    Player opposition;
+    @Mock
+    CommandPrompt prompt;
     InteractivePlayer player;
 
     @Before
     public void setupPlayer() {
-        reader = new StringReader("3");
-        writer = new StringWriter();
-        player = new InteractivePlayer("X", reader, writer);
-
-        stub(opposition.getSymbol()).toReturn("O");
+        player = new InteractivePlayer("X", prompt);
+        given(opposition.getSymbol()).willReturn("O");
     }
 
     @Test
     public void displaysTheCurrentStateOfTheBoardAndPromptsForNextMove() {
         Collection<Move> playedMoves = new ArrayList<Move>();
-        playedMoves.add(move(player, 0, 0));
-        playedMoves.add(move(opposition, 0, 1));
-        playedMoves.add(move(player, 1, 0));
         given(gameBoard.getPlayedMoves()).willReturn(playedMoves);
 
         player.takeTurn(gameBoard);
 
-        String expectedBoard = "X|O|3\nX|5|6\n7|8|9\nNext Move: ";
-
-        assertThat(writer.toString(), is(expectedBoard));
+        verify(prompt).displayBoard(playedMoves);
     }
 
     @Test
     public void takesTurnFromUsersInput() throws IOException {
+        Move move = move(player, 0, 1);
+        given(prompt.readMove(player)).willReturn(move);
         player.takeTurn(gameBoard);
 
-        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
-        verify(gameBoard).make(argumentCaptor.capture());
-
-        Move expectedMove = move(player, 0, 2);
-        assertThat(argumentCaptor.getValue(), is(expectedMove));
+        verify(gameBoard).make(move);
     }
 
     @Test
-    @Ignore
-    public void promptsUserAgainIfTheMoveWasIllegal() {
-        Collection<Move> playedMoves = new ArrayList<Move>();
-        playedMoves.add(move(player, 0, 2));
-        playedMoves.add(move(opposition, 0, 1));
-        given(gameBoard.getPlayedMoves()).willReturn(playedMoves);
-
-        doThrow(RuntimeException.class).doNothing().when(gameBoard).make(move(player, 0, 2));
+    public void promptsUserAgainToTryAgain() {
+        Move move = move(player, 0, 2);
+        doThrow(IllegalArgumentException.class).doNothing().when(gameBoard).make(move);
+        given(prompt.readMove(player)).willReturn(move);
 
         player.takeTurn(gameBoard);
 
-
-        String expectedBoard = "1|O|X\n4|5|6\n7|8|9\nNext Move: ";
-        expectedBoard += "Illegal Move! Try again: ";
-        assertThat(writer.toString(), is(expectedBoard));
+        verify(prompt).tryAgain();
     }
 }

@@ -3,18 +3,17 @@ package tictactoe;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static java.util.Arrays.copyOf;
 import static tictactoe.Move.move;
 
 class GameBoard {
     private Player[][] gameBoard = new Player[3][3];
-    private Collection<Move> playedMoves = new ArrayList();
+    private Collection<Move> playedMoves = new ArrayList<Move>();
 
     public GameBoard clone() {
         GameBoard clone = new GameBoard();
         for (int row = 0; row < gameBoard.length; row++) {
-            for (int col = 0; col < gameBoard.length; col++) {
-                clone.gameBoard[row][col] = gameBoard[row][col];
-            }
+            clone.gameBoard[row] = gameBoard[row].clone();
         }
         return clone;
     }
@@ -24,7 +23,7 @@ class GameBoard {
         int col = move.getCol();
 
         if (positionOccupied(row, col))
-            throw new RuntimeException("Illegal Move!");
+            throw new IllegalArgumentException("Illegal Move!");
 
         gameBoard[row][col] = move.getPlayer();
         playedMoves.add(move);

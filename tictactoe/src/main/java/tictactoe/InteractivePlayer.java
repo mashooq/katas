@@ -7,15 +7,27 @@ public class InteractivePlayer extends Player {
     private final CommandPrompt commandPrompt;
 
     public InteractivePlayer(String symbol, Reader reader, Writer writer) {
+        this(symbol, new CommandPrompt(reader, writer));
+    }
+
+    public InteractivePlayer(String symbol, CommandPrompt prompt) {
         super(symbol);
-        commandPrompt = new CommandPrompt(reader, writer);
+        commandPrompt = prompt;
     }
 
     @Override
     public void takeTurn(GameBoard gameBoard) {
-        String playedMoves = commandPrompt.displayBoard(gameBoard.getPlayedMoves());
-        commandPrompt.displayPrompt(playedMoves);
-        Move move = commandPrompt.readMove(this);
-        gameBoard.make(move);
+        commandPrompt.displayBoard(gameBoard.getPlayedMoves());
+
+        boolean legalMove = false;
+        while (!legalMove) {
+            try {
+                Move move = commandPrompt.readMove(this);
+                gameBoard.make(move);
+                legalMove = true;
+            } catch (IllegalArgumentException exception) {
+                commandPrompt.tryAgain();
+            }
+        }
     }
 }

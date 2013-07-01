@@ -27,7 +27,7 @@ public class GameBoardTest {
         gameBoard = new GameBoard();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowAMoveToAlreadyOccupiedPlace() {
         computerMoves(0, 0);
         personMoves(0, 0);
