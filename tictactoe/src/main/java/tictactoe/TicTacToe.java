@@ -15,6 +15,20 @@ public class TicTacToe {
         this.writer = writer;
     }
 
+    public static void main(String[] args) {
+        GameBoard gameBoard = new GameBoard();
+
+        Reader reader = new InputStreamReader(System.in);
+        Writer writer = new OutputStreamWriter(System.out);
+        Player player1 = new InteractivePlayer("X", reader, writer);
+        Player player2 = new AutomatedPlayer("O");
+
+        TicTacToe ticTacToe = new TicTacToe(player1, player2, gameBoard, System.out);
+
+        ticTacToe.start();
+
+    }
+
     public void start() {
         Player player = player1;
         for (int i = 0; i < 9; i++) {
@@ -28,19 +42,5 @@ public class TicTacToe {
         }
 
         writer.println("It's a draw!");
-    }
-
-    public static void main(String[] args) {
-        GameBoard gameBoard = new GameBoard();
-
-        Reader reader = new InputStreamReader(System.in);
-        Writer writer = new OutputStreamWriter(System.out);
-        Player player1 = new InteractivePlayer("X", reader, writer);
-        Player player2 = new AutomatedPlayer("O");
-
-       TicTacToe ticTacToe = new TicTacToe(player1, player2, gameBoard, System.out);
-
-        ticTacToe.start();
-
     }
 }
