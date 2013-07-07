@@ -14,40 +14,38 @@ import java.util.Scanner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.verify;
 import static tictactoe.Move.move;
+import static tictactoe.Player.Mark;
+import static tictactoe.Player.Mark.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommandPromptTest {
     @Mock java.io.PrintWriter writer;
     Scanner reader;
-    @Mock Player player;
-    @Mock Player opposition;
+
     private CommandPrompt prompt;
 
     @Before
     public void setup() {
         reader = new Scanner(new StringReader("3"));
         prompt = new CommandPrompt(reader, writer);
-        given(player.getSymbol()).willReturn("X");
-        given(opposition.getSymbol()).willReturn("O");
     }
 
     @Test
     public void takesTurnFromUsersInput() throws IOException {
-        Move move = prompt.readMove(player);
-        assertThat(move, is(move(player, 0, 2)));
+        Move move = prompt.readMove(X);
+        assertThat(move, is(move(X, 0, 2)));
     }
 
     @Test
     public void displaysTheCurrentStateOfTheBoardOnCommandPrompt() {
-        Collection<Move> playedMoves = new ArrayList<Move>();
-        playedMoves.add(move(player, 0, 0));
-        playedMoves.add(move(opposition, 0, 1));
-        playedMoves.add(move(player, 1, 0));
+        Mark[][] currentGrid = new Mark[][]{
+                {X,O,null}, {X,null,null}, {null,null,null}
+        };
 
-        prompt.displayBoard(playedMoves);
+        prompt.displayBoard(currentGrid);
 
         String expectedBoard = "X|O|3\nX|5|6\n7|8|9";
         verify(writer).println(expectedBoard);
@@ -56,9 +54,9 @@ public class CommandPromptTest {
 
     @Test
     public void promptTheUserToTryAgain() {
-        prompt.tryAgain();
-        verify(writer).println("Illegal Move! Try Again: ");
-
+        Move move = move(X, 0, 0);
+        prompt.tryAgain(move);
+        verify(writer).println(contains("Try Again"));
     }
 
 }

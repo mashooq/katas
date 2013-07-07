@@ -1,15 +1,20 @@
 package tictactoe;
 
+import static tictactoe.Player.*;
+
 public class Move {
+    private Mark mark;
     private int row;
     private int col;
-    private Player player;
-    private int score;
 
-    private Move(Player player, int row, int col) {
-        this.player = player;
+    private Move(Mark mark, int row, int col) {
+        this.mark = mark;
         this.row = row;
         this.col = col;
+    }
+
+    public Mark getMark() {
+        return mark;
     }
 
     public int getRow() {
@@ -20,47 +25,37 @@ public class Move {
         return col;
     }
 
-    public Player getPlayer() {
-        return player;
+    public int getMovePosition() {
+        return row * 3 + col + 1;
+    }
+
+    public static Move move(Mark mark, int row, int col) {
+        return new Move(mark, row, col);
+    }
+
+    public String toString() {
+        return mark + "," + row + "," + col;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        Move that = (Move) o;
+        Move move = (Move) o;
 
-        if (col != that.col) return false;
-        if (row != that.row) return false;
-        if (player != null ? !player.equals(that.player) : that.player != null) return false;
+        if (col != move.col) return false;
+        if (row != move.row) return false;
+        if (mark != move.mark) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = row;
+        int result = mark.hashCode();
+        result = 31 * result + row;
         result = 31 * result + col;
-        result = 31 * result + (player != null ? player.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return player.getSymbol() + ", " + row + ", " + col + ", " + score;
-    }
-
-
-    public static Move move(Player player, int row, int col) {
-       return new Move(player, row, col);
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public Move withScore(int score) {
-        this.score = score;
-        return this;
     }
 }

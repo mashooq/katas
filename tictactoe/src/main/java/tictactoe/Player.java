@@ -1,15 +1,13 @@
 package tictactoe;
 
 public abstract class Player {
-    private String symbol;
+    public enum Mark {X, O}
 
-    protected Player(String symbol) {
-        this.symbol = symbol;
+    protected final Mark mark;
+
+    protected Player(Mark mark) {
+        this.mark = mark;
     }
 
-    public String getSymbol() {
-            return symbol;
-    }
-
-    public abstract void takeTurn(GameBoard gameBoard);
+    public abstract Move takeTurn(Mark[][] gameGrid);
 }

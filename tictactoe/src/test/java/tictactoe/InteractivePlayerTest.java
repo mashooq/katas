@@ -7,57 +7,41 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static tictactoe.Move.move;
+import static tictactoe.Player.*;
+import static tictactoe.Player.Mark.X;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock
-    GameBoard gameBoard;
-    @Mock
-    Player opposition;
-    @Mock
-    CommandPrompt prompt;
+    @Mock GameBoard gameBoard;
+    @Mock Player opposition;
+    @Mock CommandPrompt prompt;
+
     InteractivePlayer player;
 
     @Before
     public void setupPlayer() {
-        player = new InteractivePlayer("X", prompt);
-        given(opposition.getSymbol()).willReturn("O");
+        player = new InteractivePlayer(X, prompt);
     }
 
     @Test
     public void displaysTheCurrentStateOfTheBoardAndPromptsForNextMove() {
-        Collection<Move> playedMoves = new ArrayList<Move>();
-        given(gameBoard.getPlayedMoves()).willReturn(playedMoves);
+        Mark[][] currentGrid = new Mark[3][3];
+        given(gameBoard.cloneCurrentGrid()).willReturn(currentGrid);
 
-        player.takeTurn(gameBoard);
+        player.takeTurn(currentGrid);
 
-        verify(prompt).displayBoard(playedMoves);
+        verify(prompt).displayBoard(currentGrid);
     }
 
     @Test
     public void takesTurnFromUsersInput() throws IOException {
-        Move move = move(player, 0, 1);
-        given(prompt.readMove(player)).willReturn(move);
-        player.takeTurn(gameBoard);
-
-        verify(gameBoard).make(move);
+        player.takeTurn(new Mark[3][3]);
+        verify(prompt).readMove(X);
     }
 
-    @Test
-    public void promptsUserAgainToTryAgain() {
-        Move move = move(player, 0, 2);
-        doThrow(IllegalArgumentException.class).doNothing().when(gameBoard).make(move);
-        given(prompt.readMove(player)).willReturn(move);
-
-        player.takeTurn(gameBoard);
-
-        verify(prompt).tryAgain();
-    }
 }

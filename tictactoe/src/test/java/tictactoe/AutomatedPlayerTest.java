@@ -1,44 +1,77 @@
 package tictactoe;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isIn;
 import static tictactoe.Move.move;
+import static tictactoe.Player.Mark;
+import static tictactoe.Player.Mark.O;
+import static tictactoe.Player.Mark.X;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AutomatedPlayerTest {
-    public static final String PLAYER_X = "player x";
-    @Mock
-    GameBoard gameBoard;
+    @Mock GameBoard gameBoard;
     private AutomatedPlayer player;
 
     @Before
     public void setupPlayer() {
-        player = new AutomatedPlayer(PLAYER_X);
+        player = new AutomatedPlayer(X);
     }
 
+    @Test
+    public void givenAnEmptyBoardIChooseTheSafeMove() {
+        Mark[][] gameGrid = new Mark[3][3];
+
+        Move move = player.takeTurn(gameGrid);
+
+        assertThat(move, isIn(safeFirstMoves()));
+    }
+
+    private Move[] safeFirstMoves() {
+        return new Move[]{
+                move(X,0,0), move(X,0,2),
+                move(X,1,1),
+                move(X,2,0), move(X,2,2),
+        };
+    }
 
     @Test
-    public void willTakeTurnWithTheHighestScore() {
-        List<Move> movesWithScore =
-                new ArrayList<Move>() {{
-                    add(move(player, 0, 0).withScore(30));
-                    add(move(player, 1, 1).withScore(40));
-                }};
+    public void givenIMovedInCenterAndOppositionMadeAnEdgeMove_MyNextMoveIsFurthestCorner() {
+        Mark[][] gameGrid = {
+                {null, null, null},
+                {O, X, null},
+                {null, null, null}
+        };
 
-        Move firstMoveWithHighestScore = move(player, 1, 1);
-        given(gameBoard.getAvailableMovesWithScores(player)).willReturn(movesWithScore);
+        Move move = player.takeTurn(gameGrid);
 
-        player.takeTurn(gameBoard);
+        assertThat(move, isIn(furthestCorner()));
+    }
 
-        verify(gameBoard).make(firstMoveWithHighestScore);
+    @Test
+    public void givenOppositionIsAboutToWin_IStealTheirWinningPosition() {
+        Mark[][] gameGrid = {
+                {X, null, null},
+                {X, O, null},
+                {null, null, O}
+        };
+
+        Move move = player.takeTurn(gameGrid);
+
+        assertThat(move, is(move(X, 2, 0)));
+    }
+
+    private Move[] furthestCorner() {
+        return new Move[]{
+                move(X,0,2),
+                move(X,2,2),
+        };
     }
 }

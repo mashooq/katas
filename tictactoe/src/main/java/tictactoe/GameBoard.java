@@ -1,134 +1,64 @@
 package tictactoe;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-import static java.util.Arrays.copyOf;
-import static tictactoe.Move.move;
+import static tictactoe.Player.Mark;
 
 class GameBoard {
-    private Player[][] gameBoard = new Player[3][3];
-    private Collection<Move> playedMoves = new ArrayList<Move>();
+    public static final int CELLS_IN_A_ROW = 3;
+    private final RowGenerator rowGenerator = new RowGenerator();
+    private Mark[][] currentGrid;
 
-    public GameBoard clone() {
-        GameBoard clone = new GameBoard();
-        for (int row = 0; row < gameBoard.length; row++) {
-            clone.gameBoard[row] = gameBoard[row].clone();
-        }
-        return clone;
+    public GameBoard() {
+        this(new Mark[CELLS_IN_A_ROW][CELLS_IN_A_ROW]);
     }
 
-    public void make(Move move) {
+    private GameBoard(Mark[][] grid) {
+        currentGrid = grid;
+    }
+
+    public GameBoard make(Move move) {
         int row = move.getRow();
         int col = move.getCol();
 
         if (positionOccupied(row, col))
-            throw new IllegalArgumentException("Illegal Move!");
+            throw new IllegalArgumentException("Illegal Move: " + (row * 3 + col + 1) + " is taken.");
 
-        gameBoard[row][col] = move.getPlayer();
-        playedMoves.add(move);
+        Mark[][] clonedGrid = cloneCurrentGrid();
+        clonedGrid[row][col] = move.getMark();
+
+        return new GameBoard(clonedGrid);
     }
 
     private boolean positionOccupied(int row, int col) {
-        return !empty(gameBoard[row][col]);
+        return !empty(currentGrid[row][col]);
     }
 
-    public Collection<Move> getAvailableMovesWithScores(Player player) {
-        Collection<Move> potentialMovesWithScores = new ArrayList<Move>();
-        for (int row = 0; row < gameBoard.length; row++) {
-            for (int col = 0; col < gameBoard.length; col++) {
-                if (empty(gameBoard[row][col])) {
-                    Move potentialMove = createPotentialMoveWithScore(player, row, col);
-                    potentialMovesWithScores.add(potentialMove);
-                }
+    private boolean empty(Mark mark) {
+        return mark == null;
+    }
+
+    public Mark findWinner() {
+        Collection<Mark[]> rows = rowGenerator.getAllGameRows(cloneCurrentGrid());
+
+        for (Mark[] row : rows) {
+            if (row[0] != null && row[0] == row[1] && row[1] == row[2]) {
+                return row[0];
             }
         }
-        return potentialMovesWithScores;
+
+        return null;
     }
 
-    public Collection<Move> getPlayedMoves() {
-        return playedMoves;
+    public GameBoard cloneBoard() {
+        return new GameBoard(cloneCurrentGrid());
     }
 
-    public int calculateScore(Player player) {
-        int score = calculateHorizontal(player);
-        score += calculateVertical(player);
-        score += calculateDiagonalFromLeft(player);
-        score += calculateDiagonalFromRight(player);
-
-        return score;
-    }
-
-    private int calculateHorizontal(Player player) {
-        int score = 0;
-        for (int row = 0; row < 3; row++) {
-            score += calculateRowScore(player, gameBoard[row]);
+    public Mark[][] cloneCurrentGrid() {
+        Mark[][] clonedGrid = new Mark[CELLS_IN_A_ROW][CELLS_IN_A_ROW];
+        for (int row = 0; row < CELLS_IN_A_ROW; row++) {
+            clonedGrid[row] = currentGrid[row].clone();
         }
-        return score;
-    }
-
-    private int calculateRowScore(Player player, Player[] row) {
-        double playerMarks = 0;
-        double oppositionMarks = 0;
-
-        for (int i = 0; i < 3; i++) {
-            if (empty(row[i])) continue;
-            else if (row[i] == player) playerMarks++;
-            else oppositionMarks++;
-        }
-
-        return calculateScoreBaseOnPositions(playerMarks, oppositionMarks);
-    }
-
-    private boolean empty(Player player) {
-        return player == null;
-    }
-
-    private int calculateScoreBaseOnPositions(double playerMarks, double oppositionMarks) {
-        return (int) (Math.pow(10d, playerMarks) - Math.pow(10d, oppositionMarks));
-    }
-
-    private int calculateVertical(Player player) {
-        Player[] positionsInARow = new Player[3];
-        int score = 0;
-
-        for (int col = 0; col < 3; col++) {
-            for (int row = 0; row < 3; row++) {
-                positionsInARow[row] = gameBoard[row][col];
-            }
-
-            score += calculateRowScore(player, positionsInARow);
-        }
-        return score;
-    }
-
-    private int calculateDiagonalFromLeft(Player player) {
-        Player[] positionsInARow = new Player[3];
-        for (int colRow = 0; colRow < 3; colRow++) {
-            positionsInARow[colRow] = gameBoard[colRow][colRow];
-        }
-
-        return calculateRowScore(player, positionsInARow);
-    }
-
-    private int calculateDiagonalFromRight(Player player) {
-        Player[] positionsInARow = new Player[3];
-        for (int row = 0; row < 3; row++) {
-            positionsInARow[row] = gameBoard[row][2 - row];
-        }
-
-        return calculateRowScore(player, positionsInARow);
-    }
-
-    private Move createPotentialMoveWithScore(Player player, int row, int col) {
-        Move potentialMove = move(player, row, col);
-        GameBoard clonedBoard = clone();
-        clonedBoard.make(potentialMove);
-        potentialMove.withScore(clonedBoard.calculateScore(player));
-        return potentialMove;
-    }
-
-    public boolean isADraw() {
-        return getPlayedMoves().size() == 9;
+        return clonedGrid;
     }
 }

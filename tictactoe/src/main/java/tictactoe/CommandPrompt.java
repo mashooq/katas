@@ -3,10 +3,10 @@ package tictactoe;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.Scanner;
 
 import static tictactoe.Move.move;
+import static tictactoe.Player.Mark;
 
 public class CommandPrompt {
     final Scanner reader;
@@ -22,11 +22,11 @@ public class CommandPrompt {
         this.writer = writer;
     }
 
-    public Move readMove(Player player) {
+    public Move readMove(Mark mark) {
         int receivedMove = reader.nextInt();
         int row = (receivedMove - 1) / 3;
         int col = (receivedMove - 1) % 3;
-        return move(player, row, col);
+        return move(mark, row, col);
     }
 
     private void displayPrompt(String playedMoves) {
@@ -35,16 +35,16 @@ public class CommandPrompt {
         writer.flush();
     }
 
-    public void displayBoard(Collection<Move> playedMoves) {
+    public void displayBoard(Mark[][] currentGrid) {
         StringBuilder currentBoard = new StringBuilder();
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 if (col != 0) currentBoard.append("|");
-                Move move = findMove(playedMoves, col, row);
-                if (move == null) {
+                Mark mark = currentGrid[row][col];
+                if (mark == null) {
                     currentBoard.append((row * 3) + (col + 1));
                 } else {
-                    currentBoard.append(move.getPlayer().getSymbol());
+                    currentBoard.append(mark);
                 }
             }
             if (row < 2) currentBoard.append("\n");
@@ -52,18 +52,18 @@ public class CommandPrompt {
         displayPrompt(currentBoard.toString());
     }
 
-    Move findMove(Collection<Move> playedMoves, int col, int row) {
-        for (Move move : playedMoves) {
-            if (move.getCol() == col && move.getRow() == row) {
-                return move;
-            }
-        }
-
-        return null;
+    public void tryAgain(Move move) {
+        writer.println("Illegal Move (" + move.getMovePosition() + ") Try Again: ");
+        writer.flush();
     }
 
-    public void tryAgain() {
-        writer.println("Illegal Move! Try Again: ");
+    public void announceWinner(Mark winner) {
+        writer.println((winner + " wins"));
+        writer.flush();
+    }
+
+    public void announceDraw() {
+        writer.println("It's a draw!");
         writer.flush();
     }
 }
