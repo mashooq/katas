@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static tictactoe.Move.move;
 import static tictactoe.Player.Mark;
@@ -24,8 +26,19 @@ public class GameBoardTest {
     }
 
     @Test
-    public void canCorrectlyDetermineAWinner() {
+    public void shouldFindTheWinnerIfOneExists() {
         assertThat(makeWinningMovesForComputer().findWinner(), is(computer));
+    }
+
+    @Test
+    public void shouldReturnNullIfNoWinnerExists() {
+        assertThat(gameBoard.findWinner(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldKeepInstanceOfGameBoardImmutable() {
+        GameBoard newGameBoard = gameBoard.make(computerMove(0, 0));
+        assertThat(newGameBoard, is(not(gameBoard)));
     }
 
     private GameBoard makeWinningMovesForComputer() {

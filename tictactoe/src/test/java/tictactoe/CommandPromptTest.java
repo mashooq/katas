@@ -59,4 +59,16 @@ public class CommandPromptTest {
         verify(writer).println(contains("Try Again"));
     }
 
+    @Test
+    public void announcesTheWinner() {
+        prompt.announceWinner(X);
+        verify(writer).println(contains(X + " wins"));
+    }
+
+    @Test
+    public void announcesDraw() {
+        prompt.announceDraw();
+        verify(writer).println(contains("draw"));
+    }
+
 }

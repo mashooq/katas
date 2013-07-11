@@ -12,11 +12,6 @@ public class CommandPrompt {
     final Scanner reader;
     final PrintWriter writer;
 
-    public CommandPrompt(Reader reader, Writer writer) {
-        this.reader = new Scanner(reader);
-        this.writer = new PrintWriter(writer);
-    }
-
     public CommandPrompt(Scanner reader, PrintWriter writer) {
         this.reader = reader;
         this.writer = writer;

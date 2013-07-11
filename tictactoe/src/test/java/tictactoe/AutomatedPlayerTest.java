@@ -58,14 +58,27 @@ public class AutomatedPlayerTest {
     @Test
     public void givenOppositionIsAboutToWin_IStealTheirWinningPosition() {
         Mark[][] gameGrid = {
-                {X, null, null},
-                {X, O, null},
-                {null, null, O}
+                {O, null, null},
+                {O, X, null},
+                {null, null, X}
         };
 
         Move move = player.takeTurn(gameGrid);
 
         assertThat(move, is(move(X, 2, 0)));
+    }
+
+    @Test
+    public void givenIAmAboutToWin_IPlayTheWinningMove() {
+        Mark[][] gameGrid = {
+                {O, null, null},
+                {O, X, null},
+                {null, X, null}
+        };
+
+        Move move = player.takeTurn(gameGrid);
+
+        assertThat(move, is(move(X, 0, 1)));
     }
 
     private Move[] furthestCorner() {

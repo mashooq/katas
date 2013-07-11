@@ -50,10 +50,6 @@ class GameBoard {
         return null;
     }
 
-    public GameBoard cloneBoard() {
-        return new GameBoard(cloneCurrentGrid());
-    }
-
     public Mark[][] cloneCurrentGrid() {
         Mark[][] clonedGrid = new Mark[CELLS_IN_A_ROW][CELLS_IN_A_ROW];
         for (int row = 0; row < CELLS_IN_A_ROW; row++) {

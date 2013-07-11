@@ -15,28 +15,15 @@ public class AutomatedPlayer extends Player {
 
     @Override
     public Move takeTurn(Mark[][] currentGrid) {
-        Move move = steelOppositionsWinningMove(currentGrid);
-        if (move == null) {
-            move = findMoveWithMostWiningPositions(currentGrid);
-        }
+        SortedMap<Double, Move> potentialMovesForOpposition =  findPotentialMovesFor(oppositionsMark, currentGrid);
+        SortedMap<Double, Move> potentialMovesForMe = findPotentialMovesFor(mark, currentGrid);
 
-        return move;
-    }
-
-    private Move steelOppositionsWinningMove(Mark[][] currentGrid) {
-        SortedMap<Double, Move> potentialMoves =  findPotentialMovesFor(oppositionsMark, currentGrid);
-        Double highestScore = potentialMoves.lastKey();
-        if (highestScore >= Math.pow(10, 3)) {
-            Move oppositionMove = potentialMoves.get(potentialMoves.lastKey());
+        if (potentialMovesForOpposition.lastKey() > 1000 && potentialMovesForMe.lastKey() < 1000) {
+            Move oppositionMove = potentialMovesForOpposition.get(potentialMovesForOpposition.lastKey());
             return move(mark, oppositionMove.getRow(), oppositionMove.getCol());
+        } else {
+            return potentialMovesForMe.get(potentialMovesForMe.lastKey());
         }
-
-        return null;
-    }
-
-    private Move findMoveWithMostWiningPositions(Mark[][] gameBoard) {
-        SortedMap<Double, Move> potentialMoves = findPotentialMovesFor(mark, gameBoard);
-        return potentialMoves.get(potentialMoves.lastKey());
     }
 
     private SortedMap<Double, Move> findPotentialMovesFor(Mark mark, Mark[][] currentGrid) {
