@@ -3,6 +3,7 @@ package tictactoe;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -37,28 +38,33 @@ public class InteractivePlayerTest {
         given(gameBoard.cloneCurrentGrid()).willReturn(currentGrid);
         given(prompt.readMove()).willReturn(3);
 
-        player.chooseMove(currentGrid);
+        player.makeMove(gameBoard);
 
         verify(prompt).displayBoard(currentGrid);
     }
 
     @Test
     public void takesMoveFromUsersInput() throws IOException {
+        Mark[][] currentGrid = new Mark[3][3];
+        given(gameBoard.cloneCurrentGrid()).willReturn(currentGrid);
         given(prompt.readMove()).willReturn(3);
 
-        Move move = player.chooseMove(new Mark[3][3]);
-        Move expectedMove = move(X, 0, 2);
-        assertThat(move, is(expectedMove));
+        player.makeMove(gameBoard);
+
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), is(move(X, 0, 2)));
     }
 
     @Test
     public void promptsTheUserToTryAgainIfThePositionIsUnknown() {
         given(prompt.readMove()).willReturn(10).willReturn(3);
 
-        Move move = player.chooseMove(new Mark[3][3]);
+        player.makeMove(gameBoard);
 
         verify(prompt).tryAgain();
-        Move expectedMove = move(X, 0, 2);
-        assertThat(move, is(expectedMove));
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), is(move(X, 0, 2)));
     }
 }

@@ -25,18 +25,21 @@ public class TicTacToe {
 
     public static void main(String[] args) {
         GameBoard gameBoard = new GameBoard();
-        CommandPrompt commandPrompt = new CommandPrompt(new Scanner(System.in), new PrintWriter(System.out));
-        Player player1 = new InteractivePlayer(X, commandPrompt);
-        Player player2 = new AutomatedPlayer(O);
+        CommandPrompt commandPrompt =
+                new CommandPrompt(new Scanner(System.in), new PrintWriter(System.out));
 
-        TicTacToe ticTacToe = new TicTacToe(player1, player2, gameBoard, commandPrompt);
-
-        ticTacToe.start();
+        new TicTacToe(
+                new InteractivePlayer(X, commandPrompt),
+                new AutomatedPlayer(O),
+                gameBoard,
+                commandPrompt)
+            .start();
     }
 
     public void start() {
         while (noWinner() && !aDraw()) {
-            makeMove(currentPlayersChosenMove());
+            makeMove();
+            incrementNumberOfTurnsTaken();
             switchPlayer();
             determineWinner();
         }
@@ -45,8 +48,12 @@ public class TicTacToe {
         else commandPrompt.announceWinner(winner);
     }
 
-    private Move currentPlayersChosenMove() {
-        return currentPlayer.chooseMove(gameBoard.cloneCurrentGrid());
+    private void incrementNumberOfTurnsTaken() {
+        numberOfTurnsTaken++;
+    }
+
+    private void makeMove() {
+        currentPlayer.makeMove(gameBoard);
     }
 
     private void determineWinner() {
@@ -63,18 +70,5 @@ public class TicTacToe {
 
     private void switchPlayer() {
         currentPlayer = currentPlayer == player1 ? player2 : player1;
-    }
-
-    private void makeMove(Move move) {
-        boolean legalMove = false;
-        while (!legalMove) {
-            try {
-                gameBoard = gameBoard.make(move);
-                numberOfTurnsTaken++;
-                legalMove = true;
-            } catch (IllegalArgumentException e) {
-                commandPrompt.tryAgain();
-            }
-        }
     }
 }

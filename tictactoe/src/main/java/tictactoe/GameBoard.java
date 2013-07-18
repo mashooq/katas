@@ -17,24 +17,19 @@ class GameBoard {
         currentGrid = grid;
     }
 
-    public GameBoard make(Move move) {
+    public void make(Move move) {
         int row = move.getRow();
         int col = move.getCol();
 
         validateMove(row, col);
-
-
-        Mark[][] clonedGrid = cloneCurrentGrid();
-        clonedGrid[row][col] = move.getMark();
-
-        return new GameBoard(clonedGrid);
+        currentGrid[row][col] = move.getMark();
     }
 
     private void validateMove(int row, int col) {
-        if (!empty(currentGrid[row][col])) {
+        if (row < 0 || row > 2 || col < 0 || col > 2) {
+            throw new IllegalArgumentException("Unknown move, selected position doesn't exist");
+        } else if (!empty(currentGrid[row][col])) {
             throw new IllegalArgumentException("Illegal Move: position is taken.");
-        } else if (row < 0 || row > 2 || col < 0 || col > 2) {
-           throw new IllegalArgumentException("Unknown move, selected position doesn't exist");
         }
     }
 

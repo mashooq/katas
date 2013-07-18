@@ -11,7 +11,19 @@ public class InteractivePlayer extends Player {
     }
 
     @Override
-    public Move chooseMove(Mark[][] currentGrid) {
+    public void makeMove(GameBoard gameBoard) {
+        boolean legalMove = false;
+        while (!legalMove) {
+            try {
+                gameBoard.make(chooseMove(gameBoard.cloneCurrentGrid()));
+                legalMove = true;
+            } catch (IllegalArgumentException e) {
+                commandPrompt.tryAgain();
+            }
+        }
+    }
+
+    private Move chooseMove(Mark[][] currentGrid) {
         commandPrompt.displayBoard(currentGrid);
         int position = readPosition();
         return convertToMove(position);

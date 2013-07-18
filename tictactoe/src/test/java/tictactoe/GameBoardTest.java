@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static tictactoe.Move.move;
@@ -22,12 +21,19 @@ public class GameBoardTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAllowAMoveToAlreadyOccupiedPlace() {
-        gameBoard.make(computerMove(0, 0)).make(personMove(0, 0));
+        gameBoard.make(computerMove(0, 0));
+        gameBoard.make(personMove(0, 0));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAllowAMoveToAnUnknownPosition() {
+        gameBoard.make(computerMove(3, 0));
     }
 
     @Test
     public void shouldFindTheWinnerIfOneExists() {
-        assertThat(makeWinningMovesForComputer().findWinner(), is(computer));
+        prepareBoardWhereComputerHasWon();
+        assertThat(gameBoard.findWinner(), is(computer));
     }
 
     @Test
@@ -35,16 +41,10 @@ public class GameBoardTest {
         assertThat(gameBoard.findWinner(), is(nullValue()));
     }
 
-    @Test
-    public void shouldKeepInstanceOfGameBoardImmutable() {
-        GameBoard newGameBoard = gameBoard.make(computerMove(0, 0));
-        assertThat(newGameBoard, is(not(gameBoard)));
-    }
-
-    private GameBoard makeWinningMovesForComputer() {
-        return gameBoard.make(computerMove(0, 0))
-                .make(computerMove(1, 1))
-                .make(computerMove(2, 2));
+    private void prepareBoardWhereComputerHasWon() {
+        gameBoard.make(computerMove(0, 0));
+        gameBoard.make(computerMove(1, 1));
+        gameBoard.make(computerMove(2, 2));
     }
 
     private Move computerMove(int row, int col) {

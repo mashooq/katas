@@ -3,12 +3,15 @@ package tictactoe;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isIn;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static tictactoe.Move.move;
 import static tictactoe.Player.Mark;
 import static tictactoe.Player.Mark.O;
@@ -26,11 +29,13 @@ public class AutomatedPlayerTest {
 
     @Test
     public void givenAnEmptyBoardIChooseTheSafeMove() {
-        Mark[][] gameGrid = new Mark[3][3];
+        given(gameBoard.cloneCurrentGrid()).willReturn(new Mark[3][3]);
 
-        Move move = player.chooseMove(gameGrid);
+        player.makeMove(gameBoard);
 
-        assertThat(move, isIn(safeFirstMoves()));
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), isIn(safeFirstMoves()));
     }
 
     private Move[] safeFirstMoves() {
@@ -48,10 +53,13 @@ public class AutomatedPlayerTest {
                 {O, X, null},
                 {null, null, null}
         };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
 
-        Move move = player.chooseMove(gameGrid);
+        player.makeMove(gameBoard);
 
-        assertThat(move, isIn(oneOfTheFurthestCorners()));
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), isIn(oneOfTheFurthestCorners()));
     }
 
     @Test
@@ -61,10 +69,13 @@ public class AutomatedPlayerTest {
                 {O, X, null},
                 {null, null, X}
         };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
 
-        Move move = player.chooseMove(gameGrid);
+        player.makeMove(gameBoard);
 
-        assertThat(move, is(move(X, 2, 0)));
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), is(move(X, 2, 0)));
     }
 
     @Test
@@ -74,10 +85,13 @@ public class AutomatedPlayerTest {
                 {O, X, null},
                 {null, X, null}
         };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
 
-        Move move = player.chooseMove(gameGrid);
+        player.makeMove(gameBoard);
 
-        assertThat(move, is(theWinningMove()));
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), is(theWinningMove()));
     }
 
     private Move theWinningMove() {
