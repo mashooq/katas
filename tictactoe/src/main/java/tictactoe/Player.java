@@ -9,5 +9,5 @@ public abstract class Player {
         this.mark = mark;
     }
 
-    public abstract Move takeTurn(Mark[][] gameGrid);
+    public abstract Move chooseMove(Mark[][] gameGrid);
 }

@@ -1,11 +1,9 @@
 package tictactoe;
 
 import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static tictactoe.Move.move;
 import static tictactoe.Player.Mark;
 
 public class CommandPrompt {
@@ -17,11 +15,19 @@ public class CommandPrompt {
         this.writer = writer;
     }
 
-    public Move readMove(Mark mark) {
-        int receivedMove = reader.nextInt();
-        int row = (receivedMove - 1) / 3;
-        int col = (receivedMove - 1) % 3;
-        return move(mark, row, col);
+    public int readMove() {
+        int position = 0;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                position = reader.nextInt();
+                validInput = true;
+            } catch (InputMismatchException e) {
+                tryAgain();
+            }
+        }
+
+        return position;
     }
 
     private void displayPrompt(String playedMoves) {
@@ -47,14 +53,14 @@ public class CommandPrompt {
         displayPrompt(currentBoard.toString());
     }
 
-    public void tryAgain(Move move) {
-        writer.println("Illegal Move (" + move.getMovePosition() + ") Try Again: ");
+    public void tryAgain() {
+        writer.println("Illegal Move, Try Again: ");
         writer.flush();
     }
 
     public void announceWinner(Mark winner) {
-        writer.println((winner + " wins"));
         writer.flush();
+        writer.println((winner + " wins"));
     }
 
     public void announceDraw() {

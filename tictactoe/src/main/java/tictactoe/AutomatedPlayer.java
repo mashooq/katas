@@ -14,7 +14,7 @@ public class AutomatedPlayer extends Player {
     }
 
     @Override
-    public Move takeTurn(Mark[][] currentGrid) {
+    public Move chooseMove(Mark[][] currentGrid) {
         SortedMap<Double, Move> potentialMovesForOpposition =  findPotentialMovesFor(oppositionsMark, currentGrid);
         SortedMap<Double, Move> potentialMovesForMe = findPotentialMovesFor(mark, currentGrid);
 

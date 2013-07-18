@@ -11,12 +11,16 @@ public class TicTacToe {
     private final Player player2;
     private GameBoard gameBoard;
     private CommandPrompt commandPrompt;
+    private Player currentPlayer;
+    private int numberOfTurnsTaken = 0;
+    private Mark winner;
 
     public TicTacToe(Player player1, Player player2, GameBoard gameBoard, CommandPrompt commandPrompt) {
         this.player1 = player1;
         this.player2 = player2;
         this.gameBoard = gameBoard;
         this.commandPrompt = commandPrompt;
+        this.currentPlayer = player1;
     }
 
     public static void main(String[] args) {
@@ -31,30 +35,34 @@ public class TicTacToe {
     }
 
     public void start() {
-        Player player = player1;
-        boolean noWinner = true;
-        for (int i = 0; i < 9; i++) {
-            Move move = player.takeTurn(gameBoard.cloneCurrentGrid());
-            makeMove(move);
-
-            Mark winner = gameBoard.findWinner();
-            if (winner != null) {
-                commandPrompt.announceWinner(winner);
-                noWinner = false;
-                break;
-            }
-
-            player = switchPlayer(player);
+        while (noWinner() && !aDraw()) {
+            makeMove(currentPlayersChosenMove());
+            switchPlayer();
+            determineWinner();
         }
 
-        if (noWinner) {
-            commandPrompt.announceDraw();
-        }
+        if (aDraw()) commandPrompt.announceDraw();
+        else commandPrompt.announceWinner(winner);
     }
 
-    private Player switchPlayer(Player player) {
-        player = player == player1 ? player2 : player1;
-        return player;
+    private Move currentPlayersChosenMove() {
+        return currentPlayer.chooseMove(gameBoard.cloneCurrentGrid());
+    }
+
+    private void determineWinner() {
+        winner = gameBoard.findWinner();
+    }
+
+    private boolean noWinner() {
+        return winner == null;
+    }
+
+    private boolean aDraw() {
+        return numberOfTurnsTaken == 9;
+    }
+
+    private void switchPlayer() {
+        currentPlayer = currentPlayer == player1 ? player2 : player1;
     }
 
     private void makeMove(Move move) {
@@ -62,9 +70,10 @@ public class TicTacToe {
         while (!legalMove) {
             try {
                 gameBoard = gameBoard.make(move);
+                numberOfTurnsTaken++;
                 legalMove = true;
             } catch (IllegalArgumentException e) {
-                commandPrompt.tryAgain(move);
+                commandPrompt.tryAgain();
             }
         }
     }

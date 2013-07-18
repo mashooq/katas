@@ -8,19 +8,22 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static tictactoe.Move.move;
-import static tictactoe.Player.*;
+import static tictactoe.Player.Mark;
 import static tictactoe.Player.Mark.X;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock GameBoard gameBoard;
-    @Mock Player opposition;
-    @Mock CommandPrompt prompt;
-
+    @Mock
+    GameBoard gameBoard;
+    @Mock
+    Player opposition;
+    @Mock
+    CommandPrompt prompt;
     InteractivePlayer player;
 
     @Before
@@ -32,16 +35,30 @@ public class InteractivePlayerTest {
     public void displaysTheCurrentStateOfTheBoardAndPromptsForNextMove() {
         Mark[][] currentGrid = new Mark[3][3];
         given(gameBoard.cloneCurrentGrid()).willReturn(currentGrid);
+        given(prompt.readMove()).willReturn(3);
 
-        player.takeTurn(currentGrid);
+        player.chooseMove(currentGrid);
 
         verify(prompt).displayBoard(currentGrid);
     }
 
     @Test
-    public void takesTurnFromUsersInput() throws IOException {
-        player.takeTurn(new Mark[3][3]);
-        verify(prompt).readMove(X);
+    public void takesMoveFromUsersInput() throws IOException {
+        given(prompt.readMove()).willReturn(3);
+
+        Move move = player.chooseMove(new Mark[3][3]);
+        Move expectedMove = move(X, 0, 2);
+        assertThat(move, is(expectedMove));
     }
 
+    @Test
+    public void promptsTheUserToTryAgainIfThePositionIsUnknown() {
+        given(prompt.readMove()).willReturn(10).willReturn(3);
+
+        Move move = player.chooseMove(new Mark[3][3]);
+
+        verify(prompt).tryAgain();
+        Move expectedMove = move(X, 0, 2);
+        assertThat(move, is(expectedMove));
+    }
 }

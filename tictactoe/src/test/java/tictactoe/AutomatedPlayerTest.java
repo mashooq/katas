@@ -1,7 +1,6 @@
 package tictactoe;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -29,7 +28,7 @@ public class AutomatedPlayerTest {
     public void givenAnEmptyBoardIChooseTheSafeMove() {
         Mark[][] gameGrid = new Mark[3][3];
 
-        Move move = player.takeTurn(gameGrid);
+        Move move = player.chooseMove(gameGrid);
 
         assertThat(move, isIn(safeFirstMoves()));
     }
@@ -50,9 +49,9 @@ public class AutomatedPlayerTest {
                 {null, null, null}
         };
 
-        Move move = player.takeTurn(gameGrid);
+        Move move = player.chooseMove(gameGrid);
 
-        assertThat(move, isIn(furthestCorner()));
+        assertThat(move, isIn(oneOfTheFurthestCorners()));
     }
 
     @Test
@@ -63,7 +62,7 @@ public class AutomatedPlayerTest {
                 {null, null, X}
         };
 
-        Move move = player.takeTurn(gameGrid);
+        Move move = player.chooseMove(gameGrid);
 
         assertThat(move, is(move(X, 2, 0)));
     }
@@ -76,12 +75,16 @@ public class AutomatedPlayerTest {
                 {null, X, null}
         };
 
-        Move move = player.takeTurn(gameGrid);
+        Move move = player.chooseMove(gameGrid);
 
-        assertThat(move, is(move(X, 0, 1)));
+        assertThat(move, is(theWinningMove()));
     }
 
-    private Move[] furthestCorner() {
+    private Move theWinningMove() {
+        return move(X, 0, 1);
+    }
+
+    private Move[] oneOfTheFurthestCorners() {
         return new Move[]{
                 move(X,0,2),
                 move(X,2,2),

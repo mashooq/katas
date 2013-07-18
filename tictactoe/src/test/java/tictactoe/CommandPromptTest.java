@@ -8,20 +8,19 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Scanner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.verify;
-import static tictactoe.Move.move;
 import static tictactoe.Player.Mark;
-import static tictactoe.Player.Mark.*;
+import static tictactoe.Player.Mark.O;
+import static tictactoe.Player.Mark.X;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommandPromptTest {
+    public static final String PLAYER_INPUT = "3";
     @Mock java.io.PrintWriter writer;
     Scanner reader;
 
@@ -29,14 +28,14 @@ public class CommandPromptTest {
 
     @Before
     public void setup() {
-        reader = new Scanner(new StringReader("3"));
+        reader = new Scanner(new StringReader(PLAYER_INPUT));
         prompt = new CommandPrompt(reader, writer);
     }
 
     @Test
-    public void takesTurnFromUsersInput() throws IOException {
-        Move move = prompt.readMove(X);
-        assertThat(move, is(move(X, 0, 2)));
+    public void readsPositionFromCommandPrompt() throws IOException {
+        int position = prompt.readMove();
+        assertThat(position, is(new Integer(PLAYER_INPUT)));
     }
 
     @Test
@@ -54,8 +53,7 @@ public class CommandPromptTest {
 
     @Test
     public void promptTheUserToTryAgain() {
-        Move move = move(X, 0, 0);
-        prompt.tryAgain(move);
+        prompt.tryAgain();
         verify(writer).println(contains("Try Again"));
     }
 

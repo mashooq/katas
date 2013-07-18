@@ -21,8 +21,8 @@ class GameBoard {
         int row = move.getRow();
         int col = move.getCol();
 
-        if (positionOccupied(row, col))
-            throw new IllegalArgumentException("Illegal Move: " + (row * 3 + col + 1) + " is taken.");
+        validateMove(row, col);
+
 
         Mark[][] clonedGrid = cloneCurrentGrid();
         clonedGrid[row][col] = move.getMark();
@@ -30,8 +30,12 @@ class GameBoard {
         return new GameBoard(clonedGrid);
     }
 
-    private boolean positionOccupied(int row, int col) {
-        return !empty(currentGrid[row][col]);
+    private void validateMove(int row, int col) {
+        if (!empty(currentGrid[row][col])) {
+            throw new IllegalArgumentException("Illegal Move: position is taken.");
+        } else if (row < 0 || row > 2 || col < 0 || col > 2) {
+           throw new IllegalArgumentException("Unknown move, selected position doesn't exist");
+        }
     }
 
     private boolean empty(Mark mark) {
