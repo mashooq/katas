@@ -31,40 +31,60 @@ public class CommandPrompt {
     }
 
     private void displayPrompt(String playedMoves) {
-        writer.println(playedMoves);
-        writer.println("Next Move: ");
-        writer.flush();
+        printLine(playedMoves);
+        printLine("Next Move: ");
     }
 
     public void displayBoard(Mark[][] currentGrid) {
         StringBuilder currentBoard = new StringBuilder();
         for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                if (col != 0) currentBoard.append("|");
-                Mark mark = currentGrid[row][col];
-                if (mark == null) {
-                    currentBoard.append((row * 3) + (col + 1));
-                } else {
-                    currentBoard.append(mark);
-                }
-            }
+            displayEmptyPositions(currentGrid[row], currentBoard, row);
+            currentBoard.append("    ");
+            displayTakenPositions(currentGrid[row], currentBoard);
+
             if (row < 2) currentBoard.append("\n");
         }
         displayPrompt(currentBoard.toString());
     }
 
+    private void displayTakenPositions(Mark[] marks, StringBuilder currentBoard) {
+        for (int col = 0; col < 3; col++) {
+            if (col != 0) currentBoard.append("|");
+            Mark mark = marks[col];
+            if (mark == null) {
+                currentBoard.append(" ");
+            } else {
+                currentBoard.append(mark);
+            }
+        }
+    }
+
+    private void displayEmptyPositions(Mark[] marks, StringBuilder currentBoard, int row) {
+        for (int col = 0; col < 3; col++) {
+            if (col != 0) currentBoard.append("|");
+            Mark mark = marks[col];
+            if (mark == null) {
+                currentBoard.append((row * 3) + (col + 1));
+            } else {
+                currentBoard.append(" ");
+            }
+        }
+    }
+
     public void tryAgain() {
-        writer.println("Illegal Move, Try Again: ");
+        printLine("Illegal Move, Try Again: ");
+    }
+
+    private void printLine(String line) {
+        writer.println(line);
         writer.flush();
     }
 
     public void announceWinner(Mark winner) {
-        writer.flush();
-        writer.println((winner + " wins"));
+        printLine((winner + " wins"));
     }
 
     public void announceDraw() {
-        writer.println("It's a draw!");
-        writer.flush();
+        printLine("It's a draw!");
     }
 }

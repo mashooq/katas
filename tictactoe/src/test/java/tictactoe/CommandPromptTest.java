@@ -22,8 +22,6 @@ import static tictactoe.Player.Mark.X;
 public class CommandPromptTest {
     public static final String PLAYER_INPUT = "3";
     @Mock java.io.PrintWriter writer;
-    Scanner reader;
-
     private CommandPrompt prompt;
 
     @Before
@@ -31,6 +29,8 @@ public class CommandPromptTest {
         reader = new Scanner(new StringReader(PLAYER_INPUT));
         prompt = new CommandPrompt(reader, writer);
     }
+
+    Scanner reader;
 
     @Test
     public void readsPositionFromCommandPrompt() throws IOException {
@@ -46,7 +46,9 @@ public class CommandPromptTest {
 
         prompt.displayBoard(currentGrid);
 
-        String expectedBoard = "X|O|3\nX|5|6\n7|8|9";
+        String expectedBoard = " | |3    X|O| \n";
+        expectedBoard +=       " |5|6    X| | \n";
+        expectedBoard +=       "7|8|9     | | ";
         verify(writer).println(expectedBoard);
         verify(writer).println("Next Move: ");
     }
