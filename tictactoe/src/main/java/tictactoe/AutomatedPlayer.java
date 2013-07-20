@@ -1,13 +1,15 @@
 package tictactoe;
 
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
+import static java.lang.Math.*;
 import static tictactoe.Move.move;
 import static tictactoe.Player.Mark.*;
 
 public class AutomatedPlayer extends Player {
     private final Mark oppositionsMark;
+    private final RowGenerator rowGenerator = new RowGenerator();
+
     public AutomatedPlayer(Mark mark) {
         super(mark);
         oppositionsMark = mark == X ? O : X;
@@ -18,98 +20,134 @@ public class AutomatedPlayer extends Player {
         gameBoard.make(chooseMove(gameBoard.cloneCurrentGrid()));
     }
 
-    private Move chooseMove(Mark[][] currentGrid) {
-        SortedMap<Double, Move> potentialMovesForOpposition =  findPotentialMovesFor(oppositionsMark, currentGrid);
-        SortedMap<Double, Move> potentialMovesForMe = findPotentialMovesFor(mark, currentGrid);
+    private Move chooseMove(Mark[][] board) {
+        Move bestMove = null;
+        int score = Integer.MIN_VALUE;
+        List<Move> availableMoves = generateAvailableMoves(board, myMark);
+        for (Move move : availableMoves) {
+            make(board, move);
+            int minScore = minMove(board);
+            if (minScore > score) {
+                score = minScore;
+                bestMove = move;
+            } else if (score == minScore && middleCell(move)) {
+                bestMove = move;
+            }
+            retract(board, move);
+        }
 
-        if (potentialMovesForOpposition.lastKey() > 1000 && potentialMovesForMe.lastKey() < 1000) {
-            Move oppositionMove = potentialMovesForOpposition.get(potentialMovesForOpposition.lastKey());
-            return move(mark, oppositionMove.getRow(), oppositionMove.getCol());
+        return bestMove;
+    }
+
+    private boolean middleCell(Move move) {
+        return move.getRow() == 1 && move.getCol() == 1;
+    }
+
+
+    private int maxMove (Mark[][] board) {
+        List<Move> availableMoves = generateAvailableMoves(board, myMark);
+        if (availableMoves.size() == 0 || hasWinner(board)) {
+            return calculateScore(board, false, availableMoves.size());
+        }
+
+        int score = Integer.MIN_VALUE;
+        for (Move move : availableMoves) {
+            make(board, move);
+            int minScore = minMove(board);
+            if (minScore > score) {
+                score = minScore;
+            }
+            retract(board, move);
+        }
+
+        return score;
+    }
+
+    private void retract(Mark[][] board, Move move) {
+        board[move.getRow()][move.getCol()] = null;
+    }
+
+    private void make(Mark[][] board, Move move) {
+        board[move.getRow()][move.getCol()] = move.getMark();
+    }
+
+    private int minMove(Mark[][] board) {
+        List<Move> availableMoves = generateAvailableMoves(board, oppositionsMark);
+        if (availableMoves.size() == 0 || hasWinner(board)) {
+            return calculateScore(board, true, availableMoves.size());
+        }
+
+        int score = Integer.MAX_VALUE;
+        for (Move move : availableMoves) {
+            make(board, move);
+            int maxScore = maxMove(board);
+            if (maxScore < score) {
+                score = maxScore;
+            }
+            retract(board, move);
+        }
+
+        return score;
+    }
+
+    private int calculateScore(Mark[][] board, boolean myTurn, int numberOfAvailableMoves) {
+        int score = 0;
+        Collection<Mark[]> gameRows = rowGenerator.getAllGameRows(board);
+        for (Mark[] row : gameRows) {
+            int rowScore = calculateRowScore(row, myTurn);
+            score += rowScore;
+        }
+
+        return score * numberOfAvailableMoves;
+    }
+
+    private int calculateRowScore(Mark[] row, boolean myTurn) {
+        int myMarks = 0;
+        int oppositionMarks = 0;
+
+        for (Mark mark : row) {
+            if (mark == myMark) myMarks++;
+            else if (mark == oppositionsMark) oppositionMarks++;
+        }
+
+        return calculateScoreBasedOnMarks(myTurn, myMarks, oppositionMarks);
+    }
+
+    private int calculateScoreBasedOnMarks(boolean myTurn, int myMarks, int oppositionMarks) {
+        int advantage = 1;
+        if (oppositionMarks == 0) {
+            if (myTurn) advantage = 3;
+            return (int) pow(10, myMarks) * advantage;
+        } else if (myMarks == 0) {
+            if (!myTurn) advantage = 3;
+            return -(int) pow(10, oppositionMarks) * advantage;
         } else {
-            return potentialMovesForMe.get(potentialMovesForMe.lastKey());
+            return 0;
         }
     }
 
-    private SortedMap<Double, Move> findPotentialMovesFor(Mark mark, Mark[][] currentGrid) {
-        SortedMap<Double, Move> potentialMoves = new TreeMap<Double, Move>();
+    private List<Move> generateAvailableMoves(Mark[][] board, Mark playersMark) {
+        List<Move> availableMoves = new ArrayList<Move>();
+
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                if (currentGrid[row][col] == null) {
-                    Move move = move(mark, row, col);
-                    Double winningPositions = findWinningPositions(currentGrid, move);
-                    potentialMoves.put(winningPositions, move);
+                if (board[row][col] == null) {
+                    availableMoves.add(move(playersMark, row, col));
                 }
             }
         }
-        return potentialMoves;
+        return availableMoves;
     }
 
-    private double findWinningPositions(Mark[][] currentGrid, Move move) {
-        Mark[][] grid = makeMove(move, currentGrid);
-        return findHorizontal(move.getMark(), grid) + findVertical(move.getMark(), grid) +
-                findDiagonalFromLeft(move.getMark(), grid) + findDiagonalFromRight(move.getMark(), grid);
+    public boolean hasWinner(Mark[][] board) {
+        Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
 
-    }
-
-    private Mark[][] makeMove(Move move, Mark[][] currentGrid) {
-        Mark[][] clonedGrid = new Mark[3][3];
-        for (int row = 0; row < 3; row++) {
-            clonedGrid[row] = currentGrid[row].clone();
-        }
-
-        clonedGrid[move.getRow()][move.getCol()] = move.getMark();
-        return clonedGrid;
-    }
-
-    private double findHorizontal(Mark playersMark, Mark[][] currentGrid) {
-        double score = 0;
-        for (int row = 0; row < 3; row++) {
-            score += calculateRowScore(playersMark, currentGrid[row]);
-        }
-        return score;
-    }
-
-    private double calculateRowScore(Mark playersMark, Mark[] row) {
-        int playerMarks = 0;
-        for (int i = 0; i < 3; i++) {
-            if (row[i] == playersMark) {
-                playerMarks++;
-            } else if (row[i] != null) {
-                return 0;
+        for (Mark[] row : rows) {
+            if (row[0] != null && row[0] == row[1] && row[1] == row[2]) {
+                return true;
             }
         }
-        return playerMarks == 0? 0 : Math.pow(10, playerMarks);
-    }
 
-    private int findVertical(Mark playersMark, Mark[][] currentGrid) {
-        Mark[] marksInARow = new Mark[3];
-        int score = 0;
-
-        for (int col = 0; col < 3; col++) {
-            for (int row = 0; row < 3; row++) {
-                marksInARow[row] = currentGrid[row][col];
-            }
-
-            score += calculateRowScore(playersMark, marksInARow);
-        }
-        return score;
-    }
-
-    private double findDiagonalFromLeft(Mark playersMark, Mark[][] currentGrid) {
-        Mark[] marksInARow = new Mark[3];
-        for (int colRow = 0; colRow < 3; colRow++) {
-            marksInARow[colRow] = currentGrid[colRow][colRow];
-        }
-
-        return calculateRowScore(playersMark, marksInARow);
-    }
-
-    private double findDiagonalFromRight(Mark playersMark, Mark[][] currentGrid) {
-        Mark[] marksInARow = new Mark[3];
-        for (int row = 0; row < 3; row++) {
-            marksInARow[row] = currentGrid[row][2 - row];
-        }
-
-        return calculateRowScore(playersMark, marksInARow);
+        return false;
     }
 }

@@ -32,7 +32,7 @@ public class InteractivePlayer extends Player {
     private Move convertToMove(int position) {
         int row = (position - 1) / 3;
         int col = (position - 1) % 3;
-        return move(mark, row, col);
+        return move(myMark, row, col);
     }
 
     private int readPosition() {

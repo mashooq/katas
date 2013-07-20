@@ -94,6 +94,22 @@ public class AutomatedPlayerTest {
         assertThat(argumentCaptor.getValue(), is(theWinningMove()));
     }
 
+    @Test
+    public void favoursTheCenterCell() {
+        Mark[][] gameGrid = {
+                {null, null, null},
+                {O, null, null},
+                {null, null, null}
+        };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
+
+        player.makeMove(gameBoard);
+
+        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
+        verify(gameBoard).make(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue(), is((move(X,1,1))));
+    }
+
     private Move theWinningMove() {
         return move(X, 0, 1);
     }
