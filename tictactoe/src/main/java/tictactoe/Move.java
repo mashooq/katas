@@ -25,10 +25,6 @@ public class Move {
         return col;
     }
 
-    public int getMovePosition() {
-        return row * 3 + col + 1;
-    }
-
     public static Move move(Mark mark, int row, int col) {
         return new Move(mark, row, col);
     }

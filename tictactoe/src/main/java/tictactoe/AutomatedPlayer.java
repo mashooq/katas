@@ -64,7 +64,7 @@ public class AutomatedPlayer extends Player {
     }
 
     private void retract(Mark[][] board, Move move) {
-        board[move.getRow()][move.getCol()] = null;
+        board[move.getRow()][move.getCol()] = _;
     }
 
     private void make(Mark[][] board, Move move) {
@@ -131,7 +131,7 @@ public class AutomatedPlayer extends Player {
 
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                if (board[row][col] == null) {
+                if (board[row][col] == _) {
                     availableMoves.add(move(playersMark, row, col));
                 }
             }
@@ -143,7 +143,7 @@ public class AutomatedPlayer extends Player {
         Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
 
         for (Mark[] row : rows) {
-            if (row[0] != null && row[0] == row[1] && row[1] == row[2]) {
+            if (row[0] != _ && row[0] == row[1] && row[1] == row[2]) {
                 return true;
             }
         }

@@ -13,10 +13,12 @@ import java.util.Scanner;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.contains;
+import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.verify;
 import static tictactoe.Player.Mark;
 import static tictactoe.Player.Mark.O;
 import static tictactoe.Player.Mark.X;
+import static tictactoe.Player.Mark._;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommandPromptTest {
@@ -41,7 +43,9 @@ public class CommandPromptTest {
     @Test
     public void displaysTheCurrentStateOfTheBoardOnCommandPrompt() {
         Mark[][] currentGrid = new Mark[][]{
-                {X,O,null}, {X,null,null}, {null,null,null}
+                {X, O, _},
+                {X, _, _},
+                {_, _, _}
         };
 
         prompt.displayBoard(currentGrid);
@@ -54,9 +58,17 @@ public class CommandPromptTest {
     }
 
     @Test
-    public void promptTheUserToTryAgain() {
+    public void promptsTheUserToTryAgain() {
         prompt.tryAgain();
         verify(writer).println(contains("Try Again"));
+    }
+
+    @Test
+    public void asksTheUserToTryAgain() {
+        boolean answer = prompt.askToPlayAgain();
+
+        verify(writer).println(startsWith("Play again"));
+        assertThat(answer, is(false));
     }
 
     @Test

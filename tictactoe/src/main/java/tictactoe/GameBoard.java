@@ -3,6 +3,7 @@ package tictactoe;
 import java.util.Collection;
 
 import static tictactoe.Player.Mark;
+import static tictactoe.Player.Mark.*;
 
 class GameBoard {
     public static final int CELLS_IN_A_ROW = 3;
@@ -10,11 +11,7 @@ class GameBoard {
     private Mark[][] currentGrid;
 
     public GameBoard() {
-        this(new Mark[CELLS_IN_A_ROW][CELLS_IN_A_ROW]);
-    }
-
-    private GameBoard(Mark[][] grid) {
-        currentGrid = grid;
+       currentGrid = newEmptyGrid();
     }
 
     public void make(Move move) {
@@ -34,26 +31,38 @@ class GameBoard {
     }
 
     private boolean empty(Mark mark) {
-        return mark == null;
+        return mark == _;
     }
 
     public Mark findWinner() {
         Collection<Mark[]> rows = rowGenerator.getAllGameRows(cloneCurrentGrid());
 
         for (Mark[] row : rows) {
-            if (row[0] != null && row[0] == row[1] && row[1] == row[2]) {
+            if (!empty(row[0]) && row[0] == row[1] && row[1] == row[2]) {
                 return row[0];
             }
         }
 
-        return null;
+        return _;
     }
 
     public Mark[][] cloneCurrentGrid() {
-        Mark[][] clonedGrid = new Mark[CELLS_IN_A_ROW][CELLS_IN_A_ROW];
+        Mark[][] clonedGrid = newEmptyGrid();
         for (int row = 0; row < CELLS_IN_A_ROW; row++) {
             clonedGrid[row] = currentGrid[row].clone();
         }
         return clonedGrid;
+    }
+
+    public void reset() {
+        currentGrid = newEmptyGrid();
+    }
+
+    public static Mark[][] newEmptyGrid() {
+       return new Mark[][] {
+               {_, _, _},
+               {_, _, _},
+               {_, _, _}
+       };
     }
 }

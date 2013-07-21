@@ -7,8 +7,8 @@ import static tictactoe.Player.*;
 import static tictactoe.Player.Mark.*;
 
 public class TicTacToe {
-    private final Player player1;
-    private final Player player2;
+    private Player player1;
+    private Player player2;
     private GameBoard gameBoard;
     private CommandPrompt commandPrompt;
     private Player currentPlayer;
@@ -21,6 +21,7 @@ public class TicTacToe {
         this.gameBoard = gameBoard;
         this.commandPrompt = commandPrompt;
         this.currentPlayer = player1;
+        this.winner = _;
     }
 
     public static void main(String[] args) {
@@ -33,19 +34,49 @@ public class TicTacToe {
                 new AutomatedPlayer(O),
                 gameBoard,
                 commandPrompt)
-            .start();
+                .start();
     }
 
     public void start() {
+        boolean continueGame = true;
+        while(continueGame) {
+            playGame();
+
+            announceResult();
+
+            continueGame = commandPrompt.askToPlayAgain();
+            if (continueGame) resetGame();
+        }
+    }
+
+    private void playGame() {
         while (noWinner() && !aDraw()) {
             makeMove();
             incrementNumberOfTurnsTaken();
             switchPlayer();
             determineWinner();
         }
+    }
 
+    private void announceResult() {
         if (aDraw()) commandPrompt.announceDraw();
         else commandPrompt.announceWinner(winner);
+    }
+
+    private void resetGame() {
+        numberOfTurnsTaken = 0;
+        winner = _;
+        switchPlayers();
+        gameBoard.reset();
+    }
+
+    private void switchPlayers() {
+        Player player = player1;
+        player1 = player2;
+        player2 = player;
+
+        player1.switchMark();
+        player2.switchMark();
     }
 
     private void incrementNumberOfTurnsTaken() {
@@ -61,7 +92,7 @@ public class TicTacToe {
     }
 
     private boolean noWinner() {
-        return winner == null;
+        return winner == _;
     }
 
     private boolean aDraw() {

@@ -12,8 +12,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isIn;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static tictactoe.GameBoard.newEmptyGrid;
 import static tictactoe.Move.move;
 import static tictactoe.Player.Mark;
+import static tictactoe.Player.Mark._;
 import static tictactoe.Player.Mark.O;
 import static tictactoe.Player.Mark.X;
 
@@ -23,19 +25,73 @@ public class AutomatedPlayerTest {
     private AutomatedPlayer player;
 
     @Before
-    public void setupPlayer() {
+    public void setup() {
         player = new AutomatedPlayer(X);
     }
 
     @Test
     public void givenAnEmptyBoardIChooseTheSafeMove() {
-        given(gameBoard.cloneCurrentGrid()).willReturn(new Mark[3][3]);
+        given(gameBoard.cloneCurrentGrid()).willReturn(newEmptyGrid());
 
         player.makeMove(gameBoard);
 
-        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
-        verify(gameBoard).make(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue(), isIn(safeFirstMoves()));
+        assertThat(actualMove(), isIn(safeFirstMoves()));
+    }
+
+    @Test
+    public void givenIMovedInCenterAndOppositionMadeAnEdgeMove_MyNextMoveIsFurthestCorner() {
+        Mark[][] gameGrid = new Mark[][]{
+                {_, _, _},
+                {O, X, _},
+                {_, _, _}
+        };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
+
+        player.makeMove(gameBoard);
+
+        assertThat(actualMove(), isIn(oneOfTheFurthestCorners()));
+    }
+
+    @Test
+    public void givenOppositionIsAboutToWin_IStealTheirWinningPosition() {
+        Mark[][] gameGrid = new Mark[][]{
+                {O, _, _},
+                {O, X, _},
+                {_, _, X}
+        };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
+
+        player.makeMove(gameBoard);
+
+        assertThat(actualMove(), is(move(X, 2, 0)));
+    }
+
+    @Test
+    public void givenIAmAboutToWin_IPlayTheWinningMove() {
+        Mark[][] gameGrid = new Mark[][]{
+                {O, _, _},
+                {O, X, _},
+                {_, X, _}
+        };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
+
+        player.makeMove(gameBoard);
+
+        assertThat(actualMove(), is(theWinningMove()));
+    }
+
+    @Test
+    public void favoursTheCenterCell() {
+        Mark[][] gameGrid = new Mark[][]{
+                {_, _, _},
+                {O, _, _},
+                {_, _, _}
+        };
+        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
+
+        player.makeMove(gameBoard);
+
+        assertThat(actualMove(), is(centerCell()));
     }
 
     private Move[] safeFirstMoves() {
@@ -46,68 +102,14 @@ public class AutomatedPlayerTest {
         };
     }
 
-    @Test
-    public void givenIMovedInCenterAndOppositionMadeAnEdgeMove_MyNextMoveIsFurthestCorner() {
-        Mark[][] gameGrid = {
-                {null, null, null},
-                {O, X, null},
-                {null, null, null}
-        };
-        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
-
-        player.makeMove(gameBoard);
-
+    private Move actualMove() {
         ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
         verify(gameBoard).make(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue(), isIn(oneOfTheFurthestCorners()));
+        return argumentCaptor.getValue();
     }
 
-    @Test
-    public void givenOppositionIsAboutToWin_IStealTheirWinningPosition() {
-        Mark[][] gameGrid = {
-                {O, null, null},
-                {O, X, null},
-                {null, null, X}
-        };
-        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
-
-        player.makeMove(gameBoard);
-
-        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
-        verify(gameBoard).make(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue(), is(move(X, 2, 0)));
-    }
-
-    @Test
-    public void givenIAmAboutToWin_IPlayTheWinningMove() {
-        Mark[][] gameGrid = {
-                {O, null, null},
-                {O, X, null},
-                {null, X, null}
-        };
-        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
-
-        player.makeMove(gameBoard);
-
-        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
-        verify(gameBoard).make(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue(), is(theWinningMove()));
-    }
-
-    @Test
-    public void favoursTheCenterCell() {
-        Mark[][] gameGrid = {
-                {null, null, null},
-                {O, null, null},
-                {null, null, null}
-        };
-        given(gameBoard.cloneCurrentGrid()).willReturn(gameGrid);
-
-        player.makeMove(gameBoard);
-
-        ArgumentCaptor<Move> argumentCaptor = ArgumentCaptor.forClass(Move.class);
-        verify(gameBoard).make(argumentCaptor.capture());
-        assertThat(argumentCaptor.getValue(), is((move(X,1,1))));
+    private Move centerCell() {
+        return move(X,1,1);
     }
 
     private Move theWinningMove() {

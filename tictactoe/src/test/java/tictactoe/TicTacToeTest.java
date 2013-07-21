@@ -1,14 +1,17 @@
 package tictactoe;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static tictactoe.Player.Mark;
+import static tictactoe.GameBoard.newEmptyGrid;
 import static tictactoe.Player.Mark.X;
+import static tictactoe.Player.Mark._;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicTacToeTest {
@@ -16,12 +19,17 @@ public class TicTacToeTest {
     @Mock Player player2;
     @Mock GameBoard gameBoard;
     @Mock CommandPrompt commandPrompt;
+    private TicTacToe ticTacToe;
+
+    @Before
+    public void setup() {
+        given(gameBoard.cloneCurrentGrid()).willReturn(newEmptyGrid());
+        ticTacToe = new TicTacToe(player1, player2, gameBoard, commandPrompt);
+    }
 
     @Test
     public void shouldPlayGameUntilAPlayerWins() {
-        given(gameBoard.cloneCurrentGrid()).willReturn(new Mark[3][3]);
-        given(gameBoard.findWinner()).willReturn(null).willReturn(X);
-        TicTacToe ticTacToe = new TicTacToe(player1, player2, gameBoard, commandPrompt);
+        given(gameBoard.findWinner()).willReturn(_).willReturn(X);
 
         ticTacToe.start();
 
@@ -31,12 +39,20 @@ public class TicTacToeTest {
 
     @Test
     public void shouldPlayGameUntilItsADraw() {
-        TicTacToe ticTacToe = new TicTacToe(player1, player2, gameBoard, commandPrompt);
-        given(gameBoard.cloneCurrentGrid()).willReturn(new Mark[3][3]);
-        given(gameBoard.findWinner()).willReturn(null);
+        given(gameBoard.findWinner()).willReturn(_);
 
         ticTacToe.start();
 
         verify(commandPrompt).announceDraw();
+    }
+
+    @Test
+    public void asksToPlayAgainOnceTheGameIsOver() {
+        given(gameBoard.findWinner()).willReturn(_).willReturn(X);
+        given(commandPrompt.askToPlayAgain()).willReturn(true).willReturn(false);
+
+        ticTacToe.start();
+
+        verify(gameBoard, times(1)).reset();
     }
 }

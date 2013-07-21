@@ -5,6 +5,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import static tictactoe.Player.Mark;
+import static tictactoe.Player.Mark._;
 
 public class CommandPrompt {
     final Scanner reader;
@@ -51,7 +52,7 @@ public class CommandPrompt {
         for (int col = 0; col < 3; col++) {
             if (col != 0) currentBoard.append("|");
             Mark mark = marks[col];
-            if (mark == null) {
+            if (empty(mark)) {
                 currentBoard.append(" ");
             } else {
                 currentBoard.append(mark);
@@ -63,12 +64,16 @@ public class CommandPrompt {
         for (int col = 0; col < 3; col++) {
             if (col != 0) currentBoard.append("|");
             Mark mark = marks[col];
-            if (mark == null) {
+            if (empty(mark)) {
                 currentBoard.append((row * 3) + (col + 1));
             } else {
                 currentBoard.append(" ");
             }
         }
+    }
+
+    private boolean empty(Mark mark) {
+        return mark == _;
     }
 
     public void tryAgain() {
@@ -86,5 +91,11 @@ public class CommandPrompt {
 
     public void announceDraw() {
         printLine("It's a draw!");
+    }
+
+    public boolean askToPlayAgain() {
+        printLine("Play again (Y/N) ?");
+        String answer = reader.next();
+        return "Y".equals(answer.toUpperCase());
     }
 }

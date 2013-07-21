@@ -3,7 +3,7 @@ package tictactoe;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class RowGenerator {
+class RowGenerator {
     public Collection<Player.Mark[]> getAllGameRows(Player.Mark[][] currentGrid) {
         Collection<Player.Mark[]> rows = new ArrayList<Player.Mark[]>();
         rows.addAll(getHorizontal(currentGrid));
