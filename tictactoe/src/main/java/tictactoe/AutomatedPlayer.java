@@ -4,7 +4,7 @@ import java.util.*;
 
 import static java.lang.Math.*;
 import static tictactoe.Move.move;
-import static tictactoe.Player.Mark.*;
+import static tictactoe.Mark.*;
 
 public class AutomatedPlayer extends Player {
     private final Mark oppositionsMark;
@@ -15,115 +15,71 @@ public class AutomatedPlayer extends Player {
         oppositionsMark = mark == X ? O : X;
     }
 
+    public boolean hasWinner(Mark[][] board) {
+        Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
+
+        for (Mark[] row : rows) {
+            if (row[0] != _ && row[0] == row[1] && row[1] == row[2]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public void makeMove(GameBoard gameBoard) {
         gameBoard.make(chooseMove(gameBoard.cloneCurrentGrid()));
     }
 
+    class ScoredMove {
+        Move move;
+        int score;
+
+        ScoredMove(Move move, int score) {
+            this.move = move;
+            this.score = score;
+        }
+    }
+
     private Move chooseMove(Mark[][] board) {
+        ScoredMove bestMove = minMaxMove(board, myMark, -100000, 100000);
+        return bestMove.move;
+    }
+
+    private ScoredMove minMaxMove(Mark[][] board, Mark mark, int alpha, int beta) {
+        List<Move> availableMoves = generateAvailableMoves(board, mark);
+        if (availableMoves.size() == 0 || hasWinner(board)) {
+            int score = calculateBoardScore(board, availableMoves.size());
+            return new ScoredMove(null, score);
+        }
+
+        return getBestMove(board, mark, alpha, beta, availableMoves);
+    }
+
+    private ScoredMove getBestMove(Mark[][] board, Mark mark, int alpha, int beta, List<Move> availableMoves) {
         Move bestMove = null;
-        int score = Integer.MIN_VALUE;
-        List<Move> availableMoves = generateAvailableMoves(board, myMark);
+        int score;
         for (Move move : availableMoves) {
-            make(board, move);
-            int minScore = minMove(board);
-            if (minScore > score) {
-                score = minScore;
-                bestMove = move;
-            } else if (score == minScore && middleCell(move)) {
-                bestMove = move;
+            makeMove(board, move);
+            score = minMaxMove(board, switchMark(mark), alpha, beta).score;
+            if (mark == myMark) {
+                if (score > alpha) {
+                    alpha = score;
+                    bestMove = move;
+                }
+            } else {
+                if (score < beta) {
+                    beta = score;
+                    bestMove = move;
+                }
             }
-            retract(board, move);
+            retractMove(board, move);
+
+            if (alpha > beta) break;
         }
 
-        return bestMove;
-    }
-
-    private boolean middleCell(Move move) {
-        return move.getRow() == 1 && move.getCol() == 1;
-    }
-
-
-    private int maxMove (Mark[][] board) {
-        List<Move> availableMoves = generateAvailableMoves(board, myMark);
-        if (availableMoves.size() == 0 || hasWinner(board)) {
-            return calculateScore(board, false, availableMoves.size());
-        }
-
-        int score = Integer.MIN_VALUE;
-        for (Move move : availableMoves) {
-            make(board, move);
-            int minScore = minMove(board);
-            if (minScore > score) {
-                score = minScore;
-            }
-            retract(board, move);
-        }
-
-        return score;
-    }
-
-    private void retract(Mark[][] board, Move move) {
-        board[move.getRow()][move.getCol()] = _;
-    }
-
-    private void make(Mark[][] board, Move move) {
-        board[move.getRow()][move.getCol()] = move.getMark();
-    }
-
-    private int minMove(Mark[][] board) {
-        List<Move> availableMoves = generateAvailableMoves(board, oppositionsMark);
-        if (availableMoves.size() == 0 || hasWinner(board)) {
-            return calculateScore(board, true, availableMoves.size());
-        }
-
-        int score = Integer.MAX_VALUE;
-        for (Move move : availableMoves) {
-            make(board, move);
-            int maxScore = maxMove(board);
-            if (maxScore < score) {
-                score = maxScore;
-            }
-            retract(board, move);
-        }
-
-        return score;
-    }
-
-    private int calculateScore(Mark[][] board, boolean myTurn, int numberOfAvailableMoves) {
-        int score = 0;
-        Collection<Mark[]> gameRows = rowGenerator.getAllGameRows(board);
-        for (Mark[] row : gameRows) {
-            int rowScore = calculateRowScore(row, myTurn);
-            score += rowScore;
-        }
-
-        return score * numberOfAvailableMoves;
-    }
-
-    private int calculateRowScore(Mark[] row, boolean myTurn) {
-        int myMarks = 0;
-        int oppositionMarks = 0;
-
-        for (Mark mark : row) {
-            if (mark == myMark) myMarks++;
-            else if (mark == oppositionsMark) oppositionMarks++;
-        }
-
-        return calculateScoreBasedOnMarks(myTurn, myMarks, oppositionMarks);
-    }
-
-    private int calculateScoreBasedOnMarks(boolean myTurn, int myMarks, int oppositionMarks) {
-        int advantage = 1;
-        if (oppositionMarks == 0) {
-            if (myTurn) advantage = 3;
-            return (int) pow(10, myMarks) * advantage;
-        } else if (myMarks == 0) {
-            if (!myTurn) advantage = 3;
-            return -(int) pow(10, oppositionMarks) * advantage;
-        } else {
-            return 0;
-        }
+        return new ScoredMove(bestMove, (mark == myMark) ? alpha : beta);
     }
 
     private List<Move> generateAvailableMoves(Mark[][] board, Mark playersMark) {
@@ -139,15 +95,48 @@ public class AutomatedPlayer extends Player {
         return availableMoves;
     }
 
-    public boolean hasWinner(Mark[][] board) {
-        Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
+    private Mark switchMark(Mark mark) {
+        return mark == X ? O : X;
+    }
 
-        for (Mark[] row : rows) {
-            if (row[0] != _ && row[0] == row[1] && row[1] == row[2]) {
-                return true;
-            }
+    private void retractMove(Mark[][] board, Move move) {
+        board[move.getRow()][move.getCol()] = _;
+    }
+
+    private void makeMove(Mark[][] board, Move move) {
+        board[move.getRow()][move.getCol()] = move.getMark();
+    }
+
+    private int calculateBoardScore(Mark[][] board, int numberOfAvailableMoves) {
+        int score = 0;
+        Collection<Mark[]> gameRows = rowGenerator.getAllGameRows(board);
+        for (Mark[] row : gameRows) {
+            int rowScore = calculateRowScore(row);
+            score += rowScore;
         }
 
-        return false;
+        return score * numberOfAvailableMoves;
+    }
+
+    private int calculateRowScore(Mark[] row) {
+        int myMarks = 0;
+        int oppositionMarks = 0;
+
+        for (Mark mark : row) {
+            if (mark == myMark) myMarks++;
+            else if (mark == oppositionsMark) oppositionMarks++;
+        }
+
+        return calculateScoreBasedOnMarks(myMarks, oppositionMarks);
+    }
+
+    private int calculateScoreBasedOnMarks(int myMarks, int oppositionMarks) {
+        if (oppositionMarks == 0) {
+            return (int) pow(10, myMarks);
+        } else if (myMarks == 0) {
+            return -(int) pow(10, oppositionMarks);
+        } else {
+            return 0;
+        }
     }
 }

@@ -5,9 +5,8 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static tictactoe.Mark._;
 import static tictactoe.Move.move;
-import static tictactoe.Player.Mark;
-import static tictactoe.Player.Mark._;
 
 public class GameBoardTest {
     private GameBoard gameBoard;

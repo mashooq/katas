@@ -1,10 +1,9 @@
 package tictactoe;
 
-import java.io.*;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
-import static tictactoe.Player.*;
-import static tictactoe.Player.Mark.*;
+import static tictactoe.Mark.*;
 
 public class TicTacToe {
     private Player player1;

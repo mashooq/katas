@@ -13,18 +13,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static tictactoe.Mark.X;
 import static tictactoe.Move.move;
-import static tictactoe.Player.Mark;
-import static tictactoe.Player.Mark.X;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock
-    GameBoard gameBoard;
-    @Mock
-    Player opposition;
-    @Mock
-    CommandPrompt prompt;
+    @Mock GameBoard gameBoard;
+    @Mock Player opposition;
+    @Mock CommandPrompt prompt;
     InteractivePlayer player;
 
     @Before
@@ -40,7 +36,7 @@ public class InteractivePlayerTest {
 
         player.makeMove(gameBoard);
 
-        verify(prompt).displayBoard(currentGrid);
+        verify(prompt).displayBoard(currentGrid, X);
     }
 
     @Test

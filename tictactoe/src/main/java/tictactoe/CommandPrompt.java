@@ -4,8 +4,7 @@ import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static tictactoe.Player.Mark;
-import static tictactoe.Player.Mark._;
+import static tictactoe.Mark._;
 
 public class CommandPrompt {
     final Scanner reader;
@@ -31,12 +30,12 @@ public class CommandPrompt {
         return position;
     }
 
-    private void displayPrompt(String playedMoves) {
-        printLine(playedMoves);
-        printLine("Next Move: ");
+    private void displayPrompt(String playedMoves, Mark playerMark) {
+        printLine("\n" + playedMoves + "\n");
+        print("Next Move (" + playerMark + "): ");
     }
 
-    public void displayBoard(Mark[][] currentGrid) {
+    public void displayBoard(Mark[][] currentGrid, Mark playerMark) {
         StringBuilder currentBoard = new StringBuilder();
         for (int row = 0; row < 3; row++) {
             displayEmptyPositions(currentGrid[row], currentBoard, row);
@@ -45,7 +44,7 @@ public class CommandPrompt {
 
             if (row < 2) currentBoard.append("\n");
         }
-        displayPrompt(currentBoard.toString());
+        displayPrompt(currentBoard.toString(), playerMark);
     }
 
     private void displayTakenPositions(Mark[] marks, StringBuilder currentBoard) {
@@ -85,6 +84,11 @@ public class CommandPrompt {
         writer.flush();
     }
 
+    private void print(String message) {
+        writer.print(message);
+        writer.flush();
+    }
+
     public void announceWinner(Mark winner) {
         printLine((winner + " wins"));
     }
@@ -94,7 +98,7 @@ public class CommandPrompt {
     }
 
     public boolean askToPlayAgain() {
-        printLine("Play again (Y/N) ?");
+        print("Play again (Y/N) ?");
         String answer = reader.next();
         return "Y".equals(answer.toUpperCase());
     }

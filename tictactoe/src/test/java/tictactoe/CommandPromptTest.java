@@ -15,10 +15,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.verify;
-import static tictactoe.Player.Mark;
-import static tictactoe.Player.Mark.O;
-import static tictactoe.Player.Mark.X;
-import static tictactoe.Player.Mark._;
+import static tictactoe.Mark.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommandPromptTest {
@@ -48,13 +45,13 @@ public class CommandPromptTest {
                 {_, _, _}
         };
 
-        prompt.displayBoard(currentGrid);
+        prompt.displayBoard(currentGrid, X);
 
-        String expectedBoard = " | |3    X|O| \n";
-        expectedBoard +=       " |5|6    X| | \n";
-        expectedBoard +=       "7|8|9     | | ";
+        String expectedBoard =    "\n | |3    X|O| \n";
+        expectedBoard +=            " |5|6    X| | \n";
+        expectedBoard +=            "7|8|9     | | \n";
         verify(writer).println(expectedBoard);
-        verify(writer).println("Next Move: ");
+        verify(writer).print(startsWith("Next Move"));
     }
 
     @Test
@@ -67,7 +64,7 @@ public class CommandPromptTest {
     public void asksTheUserToTryAgain() {
         boolean answer = prompt.askToPlayAgain();
 
-        verify(writer).println(startsWith("Play again"));
+        verify(writer).print(startsWith("Play again"));
         assertThat(answer, is(false));
     }
 

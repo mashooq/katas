@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 class RowGenerator {
-    public Collection<Player.Mark[]> getAllGameRows(Player.Mark[][] currentGrid) {
-        Collection<Player.Mark[]> rows = new ArrayList<Player.Mark[]>();
+    public Collection<Mark[]> getAllGameRows(Mark[][] currentGrid) {
+        Collection<Mark[]> rows = new ArrayList<Mark[]>();
         rows.addAll(getHorizontal(currentGrid));
         rows.addAll(getVertical(currentGrid));
         rows.addAll(getDiagonalFromLeft(currentGrid));
@@ -13,18 +13,18 @@ class RowGenerator {
         return rows;
     }
 
-    Collection<Player.Mark[]> getHorizontal(Player.Mark[][] currentGrid) {
-        Collection<Player.Mark[]> horizontalRows = new ArrayList<Player.Mark[]>();
+    Collection<Mark[]> getHorizontal(Mark[][] currentGrid) {
+        Collection<Mark[]> horizontalRows = new ArrayList<Mark[]>();
         for (int row = 0; row < 3; row++) {
             horizontalRows.add(currentGrid[row].clone());
         }
         return horizontalRows;
     }
 
-    Collection<Player.Mark[]> getVertical(Player.Mark[][] currentGrid) {
-        Collection<Player.Mark[]> rows = new ArrayList<Player.Mark[]>();
+    Collection<Mark[]> getVertical(Mark[][] currentGrid) {
+        Collection<Mark[]> rows = new ArrayList<Mark[]>();
         for (int col = 0; col < 3; col++) {
-            Player.Mark[] marksInARow = new Player.Mark[3];
+            Mark[] marksInARow = new Mark[3];
             for (int row = 0; row < 3; row++) {
                 marksInARow[row] = currentGrid[row][col];
             }
@@ -34,9 +34,9 @@ class RowGenerator {
         return rows;
     }
 
-    Collection<Player.Mark[]> getDiagonalFromLeft(Player.Mark[][] currentGrid) {
-        Collection<Player.Mark[]> rows = new ArrayList<Player.Mark[]>();
-        Player.Mark[] marksInARow = new Player.Mark[3];
+    Collection<Mark[]> getDiagonalFromLeft(Mark[][] currentGrid) {
+        Collection<Mark[]> rows = new ArrayList<Mark[]>();
+        Mark[] marksInARow = new Mark[3];
         for (int colRow = 0; colRow < 3; colRow++) {
             marksInARow[colRow] = currentGrid[colRow][colRow];
         }
@@ -45,9 +45,9 @@ class RowGenerator {
         return rows;
     }
 
-    Collection<Player.Mark[]> getDiagonalFromRight(Player.Mark[][] currentGrid) {
-        Collection<Player.Mark[]> rows = new ArrayList<Player.Mark[]>();
-        Player.Mark[] marksInARow = new Player.Mark[3];
+    Collection<Mark[]> getDiagonalFromRight(Mark[][] currentGrid) {
+        Collection<Mark[]> rows = new ArrayList<Mark[]>();
+        Mark[] marksInARow = new Mark[3];
         for (int row = 0; row < 3; row++) {
             marksInARow[row] = currentGrid[row][2 - row];
         }

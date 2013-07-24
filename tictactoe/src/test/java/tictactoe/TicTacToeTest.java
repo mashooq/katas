@@ -10,8 +10,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static tictactoe.GameBoard.newEmptyGrid;
-import static tictactoe.Player.Mark.X;
-import static tictactoe.Player.Mark._;
+import static tictactoe.Mark.X;
+import static tictactoe.Mark._;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TicTacToeTest {

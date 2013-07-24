@@ -24,7 +24,7 @@ public class InteractivePlayer extends Player {
     }
 
     private Move chooseMove(Mark[][] currentGrid) {
-        commandPrompt.displayBoard(currentGrid);
+        commandPrompt.displayBoard(currentGrid, myMark);
         int position = readPosition();
         return convertToMove(position);
     }

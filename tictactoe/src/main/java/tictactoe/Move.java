@@ -1,7 +1,5 @@
 package tictactoe;
 
-import static tictactoe.Player.*;
-
 public class Move {
     private Mark mark;
     private int row;
@@ -39,12 +37,7 @@ public class Move {
         if (o == null || getClass() != o.getClass()) return false;
 
         Move move = (Move) o;
-
-        if (col != move.col) return false;
-        if (row != move.row) return false;
-        if (mark != move.mark) return false;
-
-        return true;
+        return col == move.col && row == move.row && mark == move.mark;
     }
 
     @Override

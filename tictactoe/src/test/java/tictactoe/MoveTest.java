@@ -4,8 +4,8 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static tictactoe.Mark.X;
 import static tictactoe.Move.move;
-import static tictactoe.Player.Mark.X;
 
 public class MoveTest {
 
@@ -21,7 +21,6 @@ public class MoveTest {
 
         assertThat(move.hashCode(), is(equalMove.hashCode()));
     }
-
 
     @Test
     public void movesByTheSamePlayerInTheSamePositionAreEqual() {

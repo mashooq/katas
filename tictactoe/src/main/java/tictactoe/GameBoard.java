@@ -2,8 +2,7 @@ package tictactoe;
 
 import java.util.Collection;
 
-import static tictactoe.Player.Mark;
-import static tictactoe.Player.Mark.*;
+import static tictactoe.Mark._;
 
 class GameBoard {
     public static final int CELLS_IN_A_ROW = 3;
