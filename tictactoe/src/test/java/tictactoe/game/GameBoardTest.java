@@ -15,7 +15,7 @@ public class GameBoardTest {
 
     @Before
     public void setupGame() {
-        gameBoard = new GameBoard();
+        gameBoard = new GameBoard(new LineGenerator());
         gameBoard.reset();
     }
 

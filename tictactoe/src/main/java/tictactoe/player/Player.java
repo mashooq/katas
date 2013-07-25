@@ -10,8 +10,8 @@ public abstract class Player {
         this.myMark = mark;
     }
 
-    public void switchMark() {
-        myMark = myMark == Mark.X ? Mark.O : Mark.X;
+    public void setMark(Mark mark) {
+        myMark = mark;
     }
 
     public abstract void makeMove(GameBoard gameBoard);

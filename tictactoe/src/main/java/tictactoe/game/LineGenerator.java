@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import static tictactoe.game.GameBoard.GRID_SIZE;
 
-public class RowGenerator {
+public class LineGenerator {
     public Collection<Mark[]> getAllGameRows(Mark[][] currentGrid) {
         Collection<Mark[]> rows = new ArrayList<Mark[]>();
         rows.addAll(getHorizontal(currentGrid));

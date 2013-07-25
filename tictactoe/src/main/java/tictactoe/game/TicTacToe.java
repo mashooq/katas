@@ -30,13 +30,13 @@ public class TicTacToe {
     }
 
     public static void main(String[] args) {
-        GameBoard gameBoard = new GameBoard();
+        GameBoard gameBoard = new GameBoard(new LineGenerator());
         Prompt prompt =
                 new CommandPrompt(new Scanner(System.in), new PrintWriter(System.out));
 
         new TicTacToe(
                 new InteractivePlayer(X, prompt),
-                new AutomatedPlayer(O),
+                new AutomatedPlayer(O, new LineGenerator()),
                 gameBoard,
                 prompt)
                 .start();
@@ -80,8 +80,10 @@ public class TicTacToe {
         player1 = player2;
         player2 = player;
 
-        player1.switchMark();
-        player2.switchMark();
+        player1.setMark(X);
+        player2.setMark(O);
+
+        currentPlayer = player1;
     }
 
     private void incrementNumberOfTurnsTaken() {

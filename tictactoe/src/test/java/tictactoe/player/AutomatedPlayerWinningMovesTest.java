@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import tictactoe.game.GameBoard;
+import tictactoe.game.LineGenerator;
 import tictactoe.game.Mark;
 import tictactoe.game.Move;
 
@@ -56,12 +57,13 @@ public class AutomatedPlayerWinningMovesTest {
 
     @Before
     public void setupBoardAndPlayer() {
-        gameBoard = new GameBoard() {
+        LineGenerator lineGenerator = new LineGenerator();
+        gameBoard = new GameBoard(lineGenerator) {
             public Mark[][] cloneCurrentGrid() { return gameInProgress; }
             public void make(Move move) { actualMove = move; }
         };
 
-        player = new AutomatedPlayer(myMark);
+        player = new AutomatedPlayer(myMark, lineGenerator);
     }
 
     @Test

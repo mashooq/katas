@@ -1,9 +1,9 @@
 package tictactoe.player;
 
 import tictactoe.game.GameBoard;
+import tictactoe.game.LineGenerator;
 import tictactoe.game.Mark;
 import tictactoe.game.Move;
-import tictactoe.game.RowGenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,11 +15,12 @@ import static tictactoe.game.Mark.*;
 import static tictactoe.game.Move.move;
 
 public class AutomatedPlayer extends Player {
-    private final Mark oppositionsMark;
-    private final RowGenerator rowGenerator = new RowGenerator();
+    private Mark oppositionsMark;
+    private LineGenerator lineGenerator;
 
-    public AutomatedPlayer(Mark mark) {
+    public AutomatedPlayer(Mark mark, LineGenerator lineGenerator) {
         super(mark);
+        this.lineGenerator = lineGenerator;
         oppositionsMark = mark == X ? O : X;
     }
 
@@ -62,17 +63,23 @@ public class AutomatedPlayer extends Player {
             }
             retractMove(board, move);
 
+            if (alpha == score && center(move)) bestMove = move;
+
             if (alpha > beta) break;
         }
 
         return new ScoredMove(bestMove, (mark == myMark) ? alpha : beta);
     }
 
+    private boolean center(Move move) {
+        return move.getCol() == 1 && move.getRow() == 1;
+    }
+
     private List<Move> generateAvailableMoves(Mark[][] board, Mark playersMark) {
         List<Move> availableMoves = new ArrayList<Move>();
 
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
+        for (int row = 0; row < GRID_SIZE; row++) {
+            for (int col = 0; col < GRID_SIZE; col++) {
                 if (board[row][col] == _) {
                     availableMoves.add(move(playersMark, row, col));
                 }
@@ -95,7 +102,7 @@ public class AutomatedPlayer extends Player {
 
     private int calculateBoardScore(Mark[][] board, int numberOfAvailableMoves) {
         int score = 0;
-        Collection<Mark[]> gameRows = rowGenerator.getAllGameRows(board);
+        Collection<Mark[]> gameRows = lineGenerator.getAllGameRows(board);
         for (Mark[] row : gameRows) {
             int rowScore = calculateRowScore(row);
             score += rowScore;
@@ -127,7 +134,7 @@ public class AutomatedPlayer extends Player {
     }
 
     private boolean hasWinner(Mark[][] board) {
-        Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
+        Collection<Mark[]> rows = lineGenerator.getAllGameRows(board);
 
         for (Mark[] row : rows) {
             int xCount = 0, oCount = 0;

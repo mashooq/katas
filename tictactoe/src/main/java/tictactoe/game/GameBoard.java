@@ -7,10 +7,11 @@ import static tictactoe.game.Mark.*;
 
 public class GameBoard {
     public static final int GRID_SIZE = 3;
-    private final RowGenerator rowGenerator = new RowGenerator();
+    private LineGenerator lineGenerator;
     private Mark[][] currentGrid;
 
-    public GameBoard() {
+    public GameBoard(LineGenerator lineGenerator) {
+        this.lineGenerator = lineGenerator;
         currentGrid = newEmptyGrid();
     }
 
@@ -23,7 +24,7 @@ public class GameBoard {
     }
 
     public Mark findWinner() {
-        Collection<Mark[]> rows = rowGenerator.getAllGameRows(cloneCurrentGrid());
+        Collection<Mark[]> rows = lineGenerator.getAllGameRows(cloneCurrentGrid());
 
         for (Mark[] row : rows) {
             int xCount = 0, oCount = 0;
