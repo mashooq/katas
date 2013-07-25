@@ -1,10 +1,7 @@
-package tictactoe;
+package tictactoe.game;
 
 import org.junit.Before;
 import org.junit.Test;
-import tictactoe.game.GameBoard;
-import tictactoe.game.Mark;
-import tictactoe.game.Move;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

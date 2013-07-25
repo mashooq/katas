@@ -1,7 +1,6 @@
-package tictactoe;
+package tictactoe.game;
 
 import org.junit.Test;
-import tictactoe.game.Move;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

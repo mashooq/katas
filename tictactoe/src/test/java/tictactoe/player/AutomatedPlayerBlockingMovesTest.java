@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.player;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,8 +7,6 @@ import org.junit.runners.Parameterized;
 import tictactoe.game.GameBoard;
 import tictactoe.game.Mark;
 import tictactoe.game.Move;
-import tictactoe.player.AutomatedPlayer;
-import tictactoe.player.Player;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.player;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +9,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import tictactoe.game.GameBoard;
 import tictactoe.game.Mark;
 import tictactoe.game.Move;
-import tictactoe.player.InteractivePlayer;
-import tictactoe.player.Player;
 import tictactoe.ui.Prompt;
 
 import java.io.IOException;

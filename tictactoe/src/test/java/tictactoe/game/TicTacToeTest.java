@@ -1,12 +1,10 @@
-package tictactoe;
+package tictactoe.game;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import tictactoe.game.GameBoard;
-import tictactoe.game.TicTacToe;
 import tictactoe.player.Player;
 import tictactoe.ui.Prompt;
 

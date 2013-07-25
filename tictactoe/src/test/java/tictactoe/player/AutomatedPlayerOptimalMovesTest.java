@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.player;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,24 +7,22 @@ import org.junit.runners.Parameterized;
 import tictactoe.game.GameBoard;
 import tictactoe.game.Mark;
 import tictactoe.game.Move;
-import tictactoe.player.AutomatedPlayer;
-import tictactoe.player.Player;
 
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.assertThat;
 import static org.junit.runners.Parameterized.Parameters;
 import static tictactoe.game.Mark.*;
 import static tictactoe.game.Move.move;
 
 @RunWith(Parameterized.class)
-public class AutomatedPlayerWinningMovesTest {
+public class AutomatedPlayerOptimalMovesTest {
     static final Mark myMark = X;
 
     Mark[][] gameInProgress;
-    Move expectedNextMove;
+    Move[] expectedNextMove;
     Move actualMove;
 
     GameBoard gameBoard;
@@ -33,25 +31,19 @@ public class AutomatedPlayerWinningMovesTest {
     @Parameters
     public static Collection<Object[]> expectedMoveForAnInProgressGame() {
         return Arrays.asList(new Object[][] {
-                {new Mark[][] { {O, _, X},
-                                {_, _, X},
-                                {O, _, _} }, move(myMark, 2, 2)},
-                {new Mark[][] { {X, _, X},
-                                {_, O, O},
-                                {X, O, _} }, move(myMark, 0, 1)},
-                {new Mark[][] { {O, X, O},
-                                {_, _, _},
-                                {O, X, _} }, move(myMark, 1, 1)},
                 {new Mark[][] { {_, _, _},
-                                {_, O, _},
-                                {X, _, X} }, move(myMark, 2, 1)},
-                {new Mark[][] { {O, _, X},
-                                {O, X, _},
-                                {_, _, _} }, move(myMark, 2, 0)}
+                                {_, _, _},
+                                {_, _, _} }, safeFirstMoves()},
+                {new Mark[][] { {_, O, _},
+                                {O, _, X},
+                                {X, _, _} }, moves(move(myMark, 0, 2))},
+                {new Mark[][] { {X, _, _},
+                                {O, _, O},
+                                {X, _, _} }, moves(move(myMark, 1, 1))}
         });
     }
 
-    public AutomatedPlayerWinningMovesTest(Mark[][] gameInProgress, Move expectedNextMove) {
+    public AutomatedPlayerOptimalMovesTest(Mark[][] gameInProgress, Move[] expectedNextMove) {
         this.gameInProgress = gameInProgress;
         this.expectedNextMove = expectedNextMove;
     }
@@ -67,8 +59,20 @@ public class AutomatedPlayerWinningMovesTest {
     }
 
     @Test
-    public void shouldMakeAWinningMoveWhenOneIsAvailable() {
+    public void shouldMakeMovesWithBestChanceForAWin() {
         player.makeMove(gameBoard);
-        assertThat(actualMove, is(expectedNextMove));
+        assertThat(actualMove, isIn(expectedNextMove));
+    }
+
+    private static Move[] safeFirstMoves() {
+       return moves(
+                move(myMark, 0, 0), move(myMark, 0, 2),
+                move(X, 1, 1),
+                move(X, 2, 0), move(X, 2, 2)
+       );
+    }
+
+    private static Move[] moves(Move ... listOfMoves) {
+        return listOfMoves;
     }
 }
