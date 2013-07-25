@@ -22,6 +22,7 @@ import static tictactoe.game.Mark.*;
 @RunWith(MockitoJUnitRunner.class)
 public class CommandPromptTest {
     public static final String PLAYER_INPUT = "3";
+
     @Mock PrintWriter writer;
     private Prompt prompt;
 
