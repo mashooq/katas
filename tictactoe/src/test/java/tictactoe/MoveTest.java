@@ -1,11 +1,12 @@
 package tictactoe;
 
 import org.junit.Test;
+import tictactoe.game.Move;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static tictactoe.Mark.X;
-import static tictactoe.Move.move;
+import static tictactoe.game.Mark.X;
+import static tictactoe.game.Move.move;
 
 public class MoveTest {
 

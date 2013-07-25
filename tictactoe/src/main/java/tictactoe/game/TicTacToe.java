@@ -1,38 +1,44 @@
-package tictactoe;
+package tictactoe.game;
+
+import tictactoe.player.AutomatedPlayer;
+import tictactoe.player.InteractivePlayer;
+import tictactoe.player.Player;
+import tictactoe.ui.CommandPrompt;
+import tictactoe.ui.Prompt;
 
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import static tictactoe.Mark.*;
+import static tictactoe.game.Mark.*;
 
 public class TicTacToe {
     private Player player1;
     private Player player2;
     private GameBoard gameBoard;
-    private CommandPrompt commandPrompt;
+    private Prompt prompt;
     private Player currentPlayer;
     private int numberOfTurnsTaken = 0;
     private Mark winner;
 
-    public TicTacToe(Player player1, Player player2, GameBoard gameBoard, CommandPrompt commandPrompt) {
+    public TicTacToe(Player player1, Player player2, GameBoard gameBoard, Prompt prompt) {
         this.player1 = player1;
         this.player2 = player2;
         this.gameBoard = gameBoard;
-        this.commandPrompt = commandPrompt;
+        this.prompt = prompt;
         this.currentPlayer = player1;
         this.winner = _;
     }
 
     public static void main(String[] args) {
         GameBoard gameBoard = new GameBoard();
-        CommandPrompt commandPrompt =
+        Prompt prompt =
                 new CommandPrompt(new Scanner(System.in), new PrintWriter(System.out));
 
         new TicTacToe(
-                new InteractivePlayer(X, commandPrompt),
+                new InteractivePlayer(X, prompt),
                 new AutomatedPlayer(O),
                 gameBoard,
-                commandPrompt)
+                prompt)
                 .start();
     }
 
@@ -43,7 +49,7 @@ public class TicTacToe {
 
             announceResult();
 
-            continueGame = commandPrompt.askToPlayAgain();
+            continueGame = prompt.askToPlayAgain();
             if (continueGame) resetGame();
         }
     }
@@ -58,8 +64,8 @@ public class TicTacToe {
     }
 
     private void announceResult() {
-        if (aDraw()) commandPrompt.announceDraw();
-        else commandPrompt.announceWinner(winner);
+        if (aDraw()) prompt.announceDraw();
+        else prompt.announceWinner(winner);
     }
 
     private void resetGame() {

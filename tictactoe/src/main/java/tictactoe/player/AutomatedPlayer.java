@@ -1,10 +1,18 @@
-package tictactoe;
+package tictactoe.player;
 
-import java.util.*;
+import tictactoe.game.GameBoard;
+import tictactoe.game.Mark;
+import tictactoe.game.Move;
+import tictactoe.game.RowGenerator;
 
-import static java.lang.Math.*;
-import static tictactoe.Move.move;
-import static tictactoe.Mark.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import static java.lang.Math.pow;
+import static tictactoe.game.GameBoard.GRID_SIZE;
+import static tictactoe.game.Mark.*;
+import static tictactoe.game.Move.move;
 
 public class AutomatedPlayer extends Player {
     private final Mark oppositionsMark;
@@ -15,31 +23,9 @@ public class AutomatedPlayer extends Player {
         oppositionsMark = mark == X ? O : X;
     }
 
-    public boolean hasWinner(Mark[][] board) {
-        Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
-
-        for (Mark[] row : rows) {
-            if (row[0] != _ && row[0] == row[1] && row[1] == row[2]) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     public void makeMove(GameBoard gameBoard) {
         gameBoard.make(chooseMove(gameBoard.cloneCurrentGrid()));
-    }
-
-    class ScoredMove {
-        Move move;
-        int score;
-
-        ScoredMove(Move move, int score) {
-            this.move = move;
-            this.score = score;
-        }
     }
 
     private Move chooseMove(Mark[][] board) {
@@ -138,5 +124,33 @@ public class AutomatedPlayer extends Player {
         } else {
             return 0;
         }
+    }
+
+    private boolean hasWinner(Mark[][] board) {
+        Collection<Mark[]> rows = rowGenerator.getAllGameRows(board);
+
+        for (Mark[] row : rows) {
+            int xCount = 0, oCount = 0;
+            for (Mark mark : row) {
+                if (mark == X) xCount++;
+                else if (mark == O) oCount++;
+                else break;
+            }
+
+            if (xCount == GRID_SIZE || oCount == GRID_SIZE) return true;
+        }
+
+        return false;
+    }
+
+    class ScoredMove {
+        Move move;
+        int score;
+
+        ScoredMove(Move move, int score) {
+            this.move = move;
+            this.score = score;
+        }
+
     }
 }

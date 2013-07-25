@@ -4,6 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import tictactoe.game.GameBoard;
+import tictactoe.game.Mark;
+import tictactoe.game.Move;
+import tictactoe.player.AutomatedPlayer;
+import tictactoe.player.Player;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,8 +16,8 @@ import java.util.Collection;
 import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.assertThat;
 import static org.junit.runners.Parameterized.Parameters;
-import static tictactoe.Mark.*;
-import static tictactoe.Move.move;
+import static tictactoe.game.Mark.*;
+import static tictactoe.game.Move.move;
 
 @RunWith(Parameterized.class)
 public class AutomatedPlayerOptimalMovesTest {

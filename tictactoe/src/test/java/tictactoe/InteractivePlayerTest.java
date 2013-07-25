@@ -6,6 +6,12 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import tictactoe.game.GameBoard;
+import tictactoe.game.Mark;
+import tictactoe.game.Move;
+import tictactoe.player.InteractivePlayer;
+import tictactoe.player.Player;
+import tictactoe.ui.Prompt;
 
 import java.io.IOException;
 
@@ -13,14 +19,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static tictactoe.Mark.X;
-import static tictactoe.Move.move;
+import static tictactoe.game.Mark.X;
+import static tictactoe.game.Move.move;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock GameBoard gameBoard;
-    @Mock Player opposition;
-    @Mock CommandPrompt prompt;
+    @Mock
+    GameBoard gameBoard;
+    @Mock
+    Player opposition;
+    @Mock
+    Prompt prompt;
     InteractivePlayer player;
 
     @Before

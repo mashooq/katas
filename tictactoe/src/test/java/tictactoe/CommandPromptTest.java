@@ -5,8 +5,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import tictactoe.game.Mark;
+import tictactoe.ui.CommandPrompt;
+import tictactoe.ui.Prompt;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.Scanner;
 
@@ -15,13 +19,13 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.verify;
-import static tictactoe.Mark.*;
+import static tictactoe.game.Mark.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommandPromptTest {
     public static final String PLAYER_INPUT = "3";
-    @Mock java.io.PrintWriter writer;
-    private CommandPrompt prompt;
+    @Mock PrintWriter writer;
+    private Prompt prompt;
 
     @Before
     public void setup() {

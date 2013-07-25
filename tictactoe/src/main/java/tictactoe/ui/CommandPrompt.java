@@ -1,12 +1,14 @@
-package tictactoe;
+package tictactoe.ui;
+
+import tictactoe.game.Mark;
 
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static tictactoe.Mark._;
+import static tictactoe.game.Mark._;
 
-public class CommandPrompt {
+public class CommandPrompt implements Prompt {
     final Scanner reader;
     final PrintWriter writer;
 
@@ -15,6 +17,7 @@ public class CommandPrompt {
         this.writer = writer;
     }
 
+    @Override
     public int readMove() {
         int position = 0;
         boolean validInput = false;
@@ -35,6 +38,7 @@ public class CommandPrompt {
         print("Next Move (" + playerMark + "): ");
     }
 
+    @Override
     public void displayBoard(Mark[][] currentGrid, Mark playerMark) {
         StringBuilder currentBoard = new StringBuilder();
         for (int row = 0; row < 3; row++) {
@@ -75,6 +79,7 @@ public class CommandPrompt {
         return mark == _;
     }
 
+    @Override
     public void tryAgain() {
         printLine("Illegal Move, Try Again: ");
     }
@@ -89,14 +94,17 @@ public class CommandPrompt {
         writer.flush();
     }
 
+    @Override
     public void announceWinner(Mark winner) {
         printLine((winner + " wins"));
     }
 
+    @Override
     public void announceDraw() {
         printLine("It's a draw!");
     }
 
+    @Override
     public boolean askToPlayAgain() {
         print("Play again (Y/N) ?");
         String answer = reader.next();

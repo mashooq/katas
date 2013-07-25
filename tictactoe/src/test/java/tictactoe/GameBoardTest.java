@@ -2,11 +2,14 @@ package tictactoe;
 
 import org.junit.Before;
 import org.junit.Test;
+import tictactoe.game.GameBoard;
+import tictactoe.game.Mark;
+import tictactoe.game.Move;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static tictactoe.Mark._;
-import static tictactoe.Move.move;
+import static tictactoe.game.Mark._;
+import static tictactoe.game.Move.move;
 
 public class GameBoardTest {
     private GameBoard gameBoard;

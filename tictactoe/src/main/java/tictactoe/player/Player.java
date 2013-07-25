@@ -1,4 +1,7 @@
-package tictactoe;
+package tictactoe.player;
+
+import tictactoe.game.GameBoard;
+import tictactoe.game.Mark;
 
 public abstract class Player {
     protected Mark myMark;

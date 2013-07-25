@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.game;
 
 public class Move {
     private Mark mark;

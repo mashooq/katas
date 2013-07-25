@@ -1,13 +1,18 @@
-package tictactoe;
+package tictactoe.player;
 
-import static tictactoe.Move.move;
+import tictactoe.game.GameBoard;
+import tictactoe.game.Mark;
+import tictactoe.game.Move;
+import tictactoe.ui.Prompt;
+
+import static tictactoe.game.Move.move;
 
 public class InteractivePlayer extends Player {
-    private final CommandPrompt commandPrompt;
+    private final Prompt prompt;
 
-    public InteractivePlayer(Mark mark, CommandPrompt prompt) {
+    public InteractivePlayer(Mark mark, Prompt prompt) {
         super(mark);
-        commandPrompt = prompt;
+        this.prompt = prompt;
     }
 
     @Override
@@ -18,13 +23,13 @@ public class InteractivePlayer extends Player {
                 gameBoard.make(chooseMove(gameBoard.cloneCurrentGrid()));
                 legalMove = true;
             } catch (IllegalArgumentException e) {
-                commandPrompt.tryAgain();
+                prompt.tryAgain();
             }
         }
     }
 
     private Move chooseMove(Mark[][] currentGrid) {
-        commandPrompt.displayBoard(currentGrid, myMark);
+        prompt.displayBoard(currentGrid, myMark);
         int position = readPosition();
         return convertToMove(position);
     }
@@ -38,9 +43,9 @@ public class InteractivePlayer extends Player {
     private int readPosition() {
         int position;
         while(true) {
-            position = commandPrompt.readMove();
+            position = prompt.readMove();
             if(valid(position)) break;
-            else commandPrompt.tryAgain();
+            else prompt.tryAgain();
         }
         return position;
     }
