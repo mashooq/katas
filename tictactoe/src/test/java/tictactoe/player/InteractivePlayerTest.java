@@ -22,12 +22,9 @@ import static tictactoe.game.Move.move;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InteractivePlayerTest {
-    @Mock
-    GameBoard gameBoard;
-    @Mock
-    Player opposition;
-    @Mock
-    Prompt prompt;
+    @Mock GameBoard gameBoard;
+    @Mock Player opposition;
+    @Mock Prompt prompt;
     InteractivePlayer player;
 
     @Before
