@@ -20,8 +20,6 @@ import static tictactoe.game.Move.move;
 
 @RunWith(Parameterized.class)
 public class AutomatedPlayerOptimalMovesTest {
-    static final Mark myMark = X;
-
     Mark[][] gameInProgress;
     Move expectedNextMove;
     Move actualMove;
@@ -87,7 +85,7 @@ public class AutomatedPlayerOptimalMovesTest {
             public void make(Move move) { actualMove = move; }
         };
 
-        player = new AutomatedPlayer(myMark, lineGenerator);
+        player = new AutomatedPlayer(X, lineGenerator);
     }
 
     @Test

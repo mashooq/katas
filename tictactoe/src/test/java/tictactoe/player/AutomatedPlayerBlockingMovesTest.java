@@ -20,8 +20,6 @@ import static tictactoe.game.Move.move;
 
 @RunWith(Parameterized.class)
 public class AutomatedPlayerBlockingMovesTest {
-    static final Mark myMark = X;
-
     Mark[][] gameInProgress;
     Move expectedNextMove;
     Move actualMove;
@@ -33,7 +31,7 @@ public class AutomatedPlayerBlockingMovesTest {
         return Arrays.asList(new Object[][] {
                 {new Mark[][] { {O, X, X},
                                 {_, O, O},
-                                {_, X, _} }, move(myMark, 1, 0)},
+                                {_, X, _} }, move(X, 1, 0)},
 
                 {new Mark[][] { {X, _, _},
                                 {_, O, O},
@@ -41,23 +39,23 @@ public class AutomatedPlayerBlockingMovesTest {
 
                 {new Mark[][] { {X, _, _},
                                 {_, O, O},
-                                {_, _, _} }, move(myMark, 1, 0)},
+                                {_, _, _} }, move(X, 1, 0)},
 
                 {new Mark[][] { {O, O, X},
                                 {_, X, _},
-                                {O, X, _} }, move(myMark, 1, 0)},
+                                {O, X, _} }, move(X, 1, 0)},
 
                 {new Mark[][] { {_, _, _},
                                 {_, X, _},
-                                {O, _, O} }, move(myMark, 2, 1)},
+                                {O, _, O} }, move(X, 2, 1)},
 
                 {new Mark[][] { {_, _, X},
                                 {_, X, _},
-                                {O, _, O} }, move(myMark, 2, 1)},
+                                {O, _, O} }, move(X, 2, 1)},
 
                 {new Mark[][] { {O, _, _},
                                 {O, X, _},
-                                {_, _, _} }, move(myMark, 2, 0)}
+                                {_, _, _} }, move(X, 2, 0)}
         });
     }
 
@@ -76,7 +74,7 @@ public class AutomatedPlayerBlockingMovesTest {
             public void make(Move move) { actualMove = move; }
         };
 
-        player = new AutomatedPlayer(myMark, lineGenerator);
+        player = new AutomatedPlayer(X, lineGenerator);
     }
 
     @Test
