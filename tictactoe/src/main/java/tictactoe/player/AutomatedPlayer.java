@@ -15,13 +15,11 @@ import static tictactoe.game.Mark.*;
 import static tictactoe.game.Move.move;
 
 public class AutomatedPlayer extends Player {
-    private Mark oppositionsMark;
     private LineGenerator lineGenerator;
 
     public AutomatedPlayer(Mark mark, LineGenerator lineGenerator) {
         super(mark);
         this.lineGenerator = lineGenerator;
-        oppositionsMark = mark == X ? O : X;
     }
 
     @Override
@@ -117,7 +115,7 @@ public class AutomatedPlayer extends Player {
 
         for (Mark mark : row) {
             if (mark == myMark) myMarks++;
-            else if (mark == oppositionsMark) oppositionMarks++;
+            else if (mark == oppositionsMark()) oppositionMarks++;
         }
 
         return calculateScoreBasedOnMarks(myMarks, oppositionMarks);
@@ -131,6 +129,10 @@ public class AutomatedPlayer extends Player {
         } else {
             return 0;
         }
+    }
+
+    private Mark oppositionsMark() {
+        return myMark == X ? O : X;
     }
 
     private boolean hasWinner(Mark[][] board) {
