@@ -52,6 +52,6 @@ public class InteractivePlayer extends Player {
     }
 
     private boolean valid(int position) {
-        return position > 0 && position < 10;
+        return position > 0 && position < (GRID_SIZE * GRID_SIZE + 1);
     }
 }
