@@ -78,7 +78,7 @@ public class AutomatedPlayerBlockingMovesTest {
     }
 
     @Test
-    public void shouldMakeABlockingMoveWhenPlayerIsAboutToWin() {
+    public void shouldMakeABlockingMoveWhenOpponentIsAboutToWin() {
         player.makeMove(gameBoard);
         assertThat(actualMove, is(expectedNextMove));
     }
