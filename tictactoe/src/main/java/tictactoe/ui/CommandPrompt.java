@@ -7,6 +7,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import static tictactoe.game.GameBoard.GRID_SIZE;
 import static tictactoe.game.Mark._;
 
 public class CommandPrompt implements Prompt {
@@ -43,7 +44,7 @@ public class CommandPrompt implements Prompt {
     @Override
     public void displayBoard(Mark[][] currentGrid, Mark playerMark) {
         StringBuilder currentBoard = new StringBuilder();
-        for (int row = 0; row < 3; row++) {
+        for (int row = 0; row < GRID_SIZE; row++) {
             displayEmptyPositions(currentGrid[row], currentBoard, row);
             currentBoard.append("    ");
             displayTakenPositions(currentGrid[row], currentBoard);
@@ -54,7 +55,7 @@ public class CommandPrompt implements Prompt {
     }
 
     private void displayTakenPositions(Mark[] marks, StringBuilder currentBoard) {
-        for (int col = 0; col < 3; col++) {
+        for (int col = 0; col < GRID_SIZE; col++) {
             if (col != 0) currentBoard.append("|");
             Mark mark = marks[col];
             if (empty(mark)) {
@@ -66,11 +67,11 @@ public class CommandPrompt implements Prompt {
     }
 
     private void displayEmptyPositions(Mark[] marks, StringBuilder currentBoard, int row) {
-        for (int col = 0; col < 3; col++) {
+        for (int col = 0; col < GRID_SIZE; col++) {
             if (col != 0) currentBoard.append("|");
             Mark mark = marks[col];
             if (empty(mark)) {
-                currentBoard.append((row * 3) + (col + 1));
+                currentBoard.append((row * GRID_SIZE) + (col + 1));
             } else {
                 currentBoard.append(" ");
             }

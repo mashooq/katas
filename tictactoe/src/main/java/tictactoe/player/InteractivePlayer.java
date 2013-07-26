@@ -5,6 +5,7 @@ import tictactoe.game.Mark;
 import tictactoe.game.Move;
 import tictactoe.ui.Prompt;
 
+import static tictactoe.game.GameBoard.GRID_SIZE;
 import static tictactoe.game.Move.move;
 
 public class InteractivePlayer extends Player {
@@ -35,8 +36,8 @@ public class InteractivePlayer extends Player {
     }
 
     private Move convertToMove(int position) {
-        int row = (position - 1) / 3;
-        int col = (position - 1) % 3;
+        int row = (position - 1) / GRID_SIZE;
+        int col = (position - 1) % GRID_SIZE;
         return move(myMark, row, col);
     }
 
