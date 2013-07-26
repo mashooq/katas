@@ -5,6 +5,7 @@ import tictactoe.game.Mark;
 import java.io.PrintWriter;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import static tictactoe.game.Mark._;
 
@@ -26,6 +27,7 @@ public class CommandPrompt implements Prompt {
                 position = reader.nextInt();
                 validInput = true;
             } catch (InputMismatchException e) {
+                reader.skip(Pattern.compile(".*"));
                 tryAgain();
             }
         }

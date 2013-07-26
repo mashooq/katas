@@ -57,6 +57,14 @@ public class AutomatedPlayerOptimalMovesTest {
                               {_, _, _}}, move(X, 0, 0)},
 
                 {new Mark[][]{{_, O, _},
+                              {_, X, _},
+                              {_, _, _}}, move(X, 1, 0)},
+
+                {new Mark[][]{{X, O, _},
+                              {_, X, _},
+                              {_, _, O}}, move(X, 2, 0)},
+
+                {new Mark[][]{{_, O, _},
                               {O, _, X},
                               {X, _, _}}, centerMove()},
 
