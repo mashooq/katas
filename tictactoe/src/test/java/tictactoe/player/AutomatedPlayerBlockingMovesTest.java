@@ -55,7 +55,11 @@ public class AutomatedPlayerBlockingMovesTest {
 
                 {new Mark[][] { {O, _, _},
                                 {O, X, _},
-                                {_, _, _} }, move(X, 2, 0)}
+                                {_, _, _} }, move(X, 2, 0)},
+
+                {new Mark[][] { {O, X, O},
+                                {_, X, _},
+                                {X, O, O} }, move(X, 1, 2)}
         });
     }
 
