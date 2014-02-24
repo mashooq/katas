@@ -10,7 +10,7 @@ public class GildedRose {
     public GildedRose(Item[] items) {
         GildedRose.items = Arrays.asList(items);
     }
-    
+
     public void updateItems() {
         updateQuality();
     }
