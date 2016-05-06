@@ -54,3 +54,11 @@ cstr.ipr
 vf.*
 .locator
 locator*
+
+# Clojure files 
+# ##################
+/target
+*.jar
+*.class
+/.lein-*
+/.nrepl-port
