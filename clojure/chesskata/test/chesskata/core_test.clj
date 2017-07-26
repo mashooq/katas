@@ -4,8 +4,8 @@
 
 (deftest chess-tests
   (testing "find diagnoals"
-    (is (= (find-diags "d1") [[4 1]  [5 2]  [6 3]  [7 4]  [8 5]]))
-    (is (= (find-diags-left "d1") [[1 4] [2 3] [3 2] [4 1]])))
+    (is (= (find-diags-right "d1") ["d1" "e2" "f3" "g4" "h5"]))
+    (is (= (find-diags-left "d1") ["a4" "b3" "c2" "d1"])))
 
   (testing "bishops dont jo anything if they cannot see each other"
     (is (= (bishop-diagonal  "a1" "b1") ["a1" "b1"]))
