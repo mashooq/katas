@@ -11,9 +11,14 @@
   ([rover coord op]
    (assoc rover coord (op (rover coord) 1))))
 
+(defn- turn-right [rover]
+  (case (:d rover)
+    :N (assoc rover :d :E)))
+
 (defn- a-move [rover instr]
   (case instr
-    \M (forward rover)))
+    \M (forward rover)
+    \R (turn-right rover)))
 
 (defn move [rover instructions]
   (reduce a-move rover (seq instructions)))
