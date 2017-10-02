@@ -1,11 +1,15 @@
 (ns marsrover.core)
 
-(defn- forward [rover]
-  (case (:d rover)
-    :N (assoc rover :y  (+ (:y rover) 1))
-    :E (assoc rover :x  (+ (:x rover) 1))
-    :S (assoc rover :y  (- (:y rover) 1))
-    :W (assoc rover :x  (- (:x rover) 1))))
+(defn- forward
+  ([rover]
+   (case (:d rover)
+     :N (forward rover :y +)
+     :E (forward rover :x +)
+     :S (forward rover :y -)
+     :W (forward rover :x -)))
+
+  ([rover coord op]
+   (assoc rover coord (op (rover coord) 1))))
 
 (defn- a-move [rover instr]
   (case instr
