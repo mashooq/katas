@@ -13,7 +13,10 @@
 
 (defn- turn-right [rover]
   (case (:d rover)
-    :N (assoc rover :d :E)))
+    :N (assoc rover :d :E)
+    :E (assoc rover :d :S)
+    :S (assoc rover :d :W)
+    :W (assoc rover :d :N)))
 
 (defn- a-move [rover instr]
   (case instr

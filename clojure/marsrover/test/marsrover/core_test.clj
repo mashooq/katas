@@ -10,4 +10,7 @@
     (is (= (move {:x 0 :y 0 :d :W} "MMM") {:x -3 :y 0 :d :W})))
 
   (testing "turns right"
-    (is (= (move {:x 0 :y 0 :d :N} "R") {:x 0 :y 0 :d :E}))))
+    (is (= (move {:x 0 :y 0 :d :N} "R") {:x 0 :y 0 :d :E}))
+    (is (= (move {:x 0 :y 0 :d :E} "R") {:x 0 :y 0 :d :S}))
+    (is (= (move {:x 0 :y 0 :d :S} "R") {:x 0 :y 0 :d :W}))
+    (is (= (move {:x 0 :y 0 :d :W} "R") {:x 0 :y 0 :d :N}))))
