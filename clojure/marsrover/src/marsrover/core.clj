@@ -2,7 +2,10 @@
 
 (defn- forward [rover]
   (case (:d rover)
-    :N (assoc rover :y  (+ (:y rover) 1))))
+    :N (assoc rover :y  (+ (:y rover) 1))
+    :E (assoc rover :x  (+ (:x rover) 1))
+    :S (assoc rover :y  (- (:y rover) 1))
+    :W (assoc rover :x  (- (:x rover) 1))))
 
 (defn- a-move [rover instr]
   (case instr
