@@ -1,14 +1,24 @@
 (ns marsrover.core)
 
 (defn- wrap-if-needed
-  ([grid rover axis]
+  ([grid axis rover]
    (let [current (rover axis) max (- (grid axis) 1)]
      (cond
        (> current max) (assoc rover axis 0)
        (< current 0) (assoc rover axis max)
        :else rover)))
   ([grid rover]
-   (wrap-if-needed grid (wrap-if-needed grid rover :x) :y)))
+   (->> rover
+        (wrap-if-needed grid :x)
+        (wrap-if-needed grid :y))))
+
+(defn- check-obstacle [current-position new-position obstacle]
+  (if (= (dissoc new-position :d) obstacle)
+    current-position
+    new-position))
+
+(defn- check-obstacles [obstacles current-position new-position]
+  (reduce (partial check-obstacle current-position) new-position (seq obstacles)))
 
 (defn- forward
   ([grid rover]
@@ -19,7 +29,9 @@
      :W (forward grid rover :x -)))
 
   ([grid rover coord op]
-   (wrap-if-needed grid (assoc rover coord (op (rover coord) 1)))))
+   (->> (assoc rover coord (op (rover coord) 1))
+        (check-obstacles (:obstacles grid) rover)
+        (wrap-if-needed grid))))
 
 (defn- turn-right [rover]
   (case (:d rover)
