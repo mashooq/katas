@@ -20,25 +20,31 @@
 (defn- check-obstacles [obstacles current-position new-position]
   (reduce (partial check-obstacle current-position) new-position (seq obstacles)))
 
+(def moves
+  {:N {:coord :y :op +}
+   :E {:coord :x :op +}
+   :S {:coord :y :op -}
+   :W {:coord :x :op -}})
+
 (defn- forward
   ([grid rover]
-   (case (:d rover)
-     :N (forward grid rover :y +)
-     :E (forward grid rover :x +)
-     :S (forward grid rover :y -)
-     :W (forward grid rover :x -)))
+   (let [move (moves (:d rover))]
+     (forward grid rover (:coord move) (:op move))))
 
   ([grid rover coord op]
    (->> (assoc rover coord (op (rover coord) 1))
         (check-obstacles (:obstacles grid) rover)
         (wrap-if-needed grid))))
 
+(def turns
+  {:N {:right :E}
+   :E {:right :S}
+   :S {:right :W}
+   :W {:right :N}})
+
 (defn- turn-right [rover]
-  (case (:d rover)
-    :N (assoc rover :d :E)
-    :E (assoc rover :d :S)
-    :S (assoc rover :d :W)
-    :W (assoc rover :d :N)))
+  (let [turn (turns (:d rover))]
+    (assoc rover :d (:right turn))))
 
 (defn- a-move [grid rover instr]
   (case instr
