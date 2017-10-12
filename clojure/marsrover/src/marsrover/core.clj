@@ -37,19 +37,24 @@
         (wrap-if-needed grid))))
 
 (def turns
-  {:N {:right :E}
-   :E {:right :S}
-   :S {:right :W}
-   :W {:right :N}})
+  {:N {:right :E :left :W}
+   :E {:right :S :left :N}
+   :S {:right :W :left :E}
+   :W {:right :N :left :S}})
 
 (defn- turn-right [rover]
   (let [turn (turns (:d rover))]
     (assoc rover :d (:right turn))))
 
+(defn- turn-left [rover]
+  (let [turn (turns (:d rover))]
+    (assoc rover :d (:left turn))))
+
 (defn- a-move [grid rover instr]
   (case instr
     \M (forward grid rover)
-    \R (turn-right rover)))
+    \R (turn-right rover)
+    \L (turn-left rover)))
 
 (defn move [grid rover instructions]
   (let [a-move-in-grid (partial a-move grid)]

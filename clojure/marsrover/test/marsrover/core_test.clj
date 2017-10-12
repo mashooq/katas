@@ -18,6 +18,12 @@
     (is (= (move-in-grid {:x 0 :y 0 :d :S} "R") {:x 0 :y 0 :d :W}))
     (is (= (move-in-grid {:x 0 :y 0 :d :W} "R") {:x 0 :y 0 :d :N})))
 
+  (testing "turns left"
+    (is (= (move-in-grid {:x 0 :y 0 :d :N} "L") {:x 0 :y 0 :d :W}))
+    (is (= (move-in-grid {:x 0 :y 0 :d :W} "L") {:x 0 :y 0 :d :S}))
+    (is (= (move-in-grid {:x 0 :y 0 :d :S} "L") {:x 0 :y 0 :d :E}))
+    (is (= (move-in-grid {:x 0 :y 0 :d :E} "L") {:x 0 :y 0 :d :N})))
+
   (testing "wraps around a grid"
     (is (= (move-in-grid {:x 0 :y 7 :d :N} "M") {:x 0 :y 0 :d :N}))
     (is (= (move-in-grid {:x 0 :y 0 :d :S} "M") {:x 0 :y 7 :d :S}))
