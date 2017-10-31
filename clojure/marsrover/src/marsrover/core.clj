@@ -1,16 +1,17 @@
-(ns marsrover.core)
+(ns marsrover.core
+  (:require [clojure.spec.alpha :as spec]))
 
 (defn- wrap-if-needed
-  ([grid axis rover]
-   (let [current (rover axis) max (- (grid axis) 1)]
+  ([size axis rover]
+   (let [current (rover axis) max (- size 1)]
      (cond
        (> current max) (assoc rover axis 0)
        (< current 0) (assoc rover axis max)
        :else rover)))
   ([grid rover]
    (->> rover
-        (wrap-if-needed grid :x)
-        (wrap-if-needed grid :y))))
+        (wrap-if-needed (:w grid) :x)
+        (wrap-if-needed (:h grid) :y))))
 
 (defn- check-obstacle [current-position new-position obstacle]
   (if (= (dissoc new-position :d) obstacle)
@@ -54,8 +55,25 @@
   (case instr
     \M (forward grid rover)
     \R (turn-right rover)
-    \L (turn-left rover)))
+    \L (turn-left rover)
+    rover))
+
+(spec/def ::coord (spec/and int? #(> % -1)))
+(spec/def ::x ::coord)
+(spec/def ::y ::coord)
+(spec/def ::d (spec/and keyword? #(#{:N :E :S :W} %)))
+(spec/def ::rover (spec/keys :req-un [::x ::y ::d]))
+
+(spec/def ::grid-size (spec/and int? #(> % 0)))
+(spec/def ::h ::grid-size)
+(spec/def ::w ::grid-size)
+(spec/def ::obstacles (spec/coll-of (spec/keys :req-un [::x ::y])))
+(spec/def ::grid (spec/keys :req-un [::w ::h] :opt-un [::obstacles]))
+
+(println "hello")
 
 (defn move [grid rover instructions]
+  {:pre [(spec/valid? ::rover rover)
+         (spec/valid? ::grid grid)]}
   (let [a-move-in-grid (partial a-move grid)]
     (reduce a-move-in-grid rover (seq instructions))))
