@@ -1,6 +1,9 @@
 (ns marsrover.core-test
   (:require [clojure.test :refer :all]
+            [clojure.spec.test.alpha :as st]
             [marsrover.core :refer :all]))
+
+(st/instrument `move)
 
 (def grid {:w 10 :h 8})
 (def move-in-grid (partial move grid))
@@ -24,10 +27,6 @@
     (is (= (move-in-grid {:x 0 :y 0 :d :S} "L") {:x 0 :y 0 :d :E}))
     (is (= (move-in-grid {:x 0 :y 0 :d :E} "L") {:x 0 :y 0 :d :N})))
 
-  (testing "ignores invalid commands"
-    (is (= (move-in-grid {:x 0 :y 0 :d :N} "D") {:x 0 :y 0 :d :N}))
-    (is (= (move-in-grid {:x 0 :y 0 :d :N} "MDM") {:x 0 :y 2 :d :N})))
-
   (testing "wraps around a grid"
     (is (= (move-in-grid {:x 0 :y 7 :d :N} "M") {:x 0 :y 0 :d :N}))
     (is (= (move-in-grid {:x 0 :y 0 :d :S} "M") {:x 0 :y 7 :d :S}))
@@ -39,14 +38,14 @@
       (is (= (move grid {:x 2 :y 2 :d :N} "MMRMM") {:x 3 :y 4 :d :E}))))
 
   (testing "does not allow an invalid rover state"
-    (is (thrown? AssertionError (move-in-grid {:x 9 :y 0 :d :X} "M")))
-    (is (thrown? AssertionError (move-in-grid {:x 9 :y -1 :d :N} "M")))
-    (is (thrown? AssertionError (move-in-grid {:x -1 :y 0 :d :N} "M"))))
+    (is (thrown? Exception (move-in-grid {:x 8 :y 0 :d :X} "M")))
+    (is (thrown? Exception (move-in-grid {:x 9 :y -1 :d :N} "M")))
+    (is (thrown? Exception (move-in-grid {:x -1 :y 0 :d :N} "M"))))
 
   (testing "does not allow an invalid grid"
-    (is (thrown? AssertionError (move {:w -1 :h 10} {:x 9 :y 0 :d :N} "M")))
-    (is (thrown? AssertionError (move {:w 0 :h 1} {:x 9 :y 0 :d :N} "M")))
-    (is (thrown? AssertionError (move {:w 1 :h 1 :obstacles [:x :y]} {:x 9 :y 0 :d :N} "M")))
-    (is (thrown? AssertionError (move {:w 1 :h 1 :obstacles [:x 10 :y 10]} {:x 9 :y 0 :d :N} "M")))
-    (is (thrown? AssertionError (move {:w 1 :h 1 :obstacles [{:x -1 :y 10}]} {:x 9 :y 0 :d :N} "M")))
-    (is (thrown? AssertionError (move {:w 1 :h 1 :obstacles [{:x 10 :y -1}]} {:x 9 :y 0 :d :N} "M")))))
+    (is (thrown? Exception (move {:w -1 :h 10} {:x 9 :y 0 :d :N} "M")))
+    (is (thrown? Exception  (move {:w 0 :h 1} {:x 9 :y 0 :d :N} "M")))
+    (is (thrown? Exception (move {:w 1 :h 1 :obstacles [:x :y]} {:x 9 :y 0 :d :N} "M")))
+    (is (thrown? Exception (move {:w 1 :h 1 :obstacles [:x 10 :y 10]} {:x 9 :y 0 :d :N} "M")))
+    (is (thrown? Exception (move {:w 1 :h 1 :obstacles [{:x -1 :y 10}]} {:x 9 :y 0 :d :N} "M")))
+    (is (thrown? Exception (move {:w 1 :h 1 :obstacles [{:x 10 :y -1}]} {:x 9 :y 0 :d :N} "M")))))

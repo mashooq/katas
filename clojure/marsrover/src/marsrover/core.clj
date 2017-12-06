@@ -55,8 +55,7 @@
   (case instr
     \M (forward grid rover)
     \R (turn-right rover)
-    \L (turn-left rover)
-    rover))
+    \L (turn-left rover)))
 
 (spec/def ::coord (spec/and int? #(> % -1)))
 (spec/def ::x ::coord)
@@ -70,10 +69,10 @@
 (spec/def ::obstacles (spec/coll-of (spec/keys :req-un [::x ::y])))
 (spec/def ::grid (spec/keys :req-un [::w ::h] :opt-un [::obstacles]))
 
-(println "hello")
+(spec/def ::instructions (spec/and string? #(re-matches #"^[MRL]+$" %)))
+
+(spec/fdef move :args (spec/cat :grid ::grid :rover ::rover :instructions ::instructions))
 
 (defn move [grid rover instructions]
-  {:pre [(spec/valid? ::rover rover)
-         (spec/valid? ::grid grid)]}
   (let [a-move-in-grid (partial a-move grid)]
     (reduce a-move-in-grid rover (seq instructions))))
