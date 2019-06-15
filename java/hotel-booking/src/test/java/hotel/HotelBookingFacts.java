@@ -17,11 +17,20 @@ public class HotelBookingFacts {
 
 
     @Test
-    public void allows_employee_to_book_an_available_room_according_to_the_company_policy() {
-        HotelAPI hotelAPI = provided().companyPolicy("company-id", "hotel-id")
+    public void allows_booking_for_an_available_room_according_to_the_company_policy() {
+        HotelAPI hotelAPI = provided().companyPolicy("company-id", "hotel-id", "room-type")
                 .andCompanyEmployee("company-id", "employee-id").build();
 
-        assertThat(hotelAPI.book("hotel-id", "employee-id"), is(true));
+        assertThat(hotelAPI.book("hotel-id", "employee-id", "room-type"), is(true));
+    }
+
+
+    @Test
+    public void does_not_allow_booking_if_room_type_is_not_available() {
+        HotelAPI hotelAPI = provided().companyPolicy("company-id", "hotel-id", "room-type")
+                .andCompanyEmployee("company-id", "employee-id").build();
+
+        assertThat(hotelAPI.book("hotel-id", "employee-id", "another-room-type"), is(false));
     }
 
 }
@@ -46,8 +55,8 @@ class HotelAPIBuilder {
         return hotelAPI;
     }
 
-    public HotelAPIBuilder companyPolicy(String companyId, String hotelId) {
-        hotelAPI.addCompanyPolicy(companyId, hotelId);
+    public HotelAPIBuilder companyPolicy(String companyId, String hotelId, String roomType) {
+        hotelAPI.addCompanyPolicy(companyId, hotelId, roomType);
         return this;
     }
 }
