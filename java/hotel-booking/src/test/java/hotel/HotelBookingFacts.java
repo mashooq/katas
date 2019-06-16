@@ -15,7 +15,7 @@ public class HotelBookingFacts {
     - not allow when company policy for hotel not available
     - not allow when company policy for employee not available
     - allow when company policy doesnt allow but employee policy does
-    todo: - not allow when company policy allows but employee policy doesnt
+    - not allow when company policy allows but employee policy doesnt
     todo: - only allows when hotel has room available for that type and dates
     todo: - not allows when hotel has no room available for that type
     todo: - not allow when hotel has no room of that type available
@@ -59,6 +59,17 @@ public class HotelBookingFacts {
                 .andCompanyEmployee("company-id", "employee-id").build();
 
         assertThat(hotelAPI.book("hotel-id", "employee-id", "room-type"), is(true));
+
+    }
+
+    @Test
+    public void not_allow_when_company_policy_doesnt_allow_but_employee_policy_doesnt() {
+        HotelAPI hotelAPI = provided()
+                .companyPolicy("company-id", "hotel-id", "room-type")
+                .employeePolicy("employee-id", "hotel-id", "another-room-type")
+                .andCompanyEmployee("company-id", "employee-id").build();
+
+        assertThat(hotelAPI.book("hotel-id", "employee-id", "room-type"), is(false));
 
     }
 
