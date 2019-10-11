@@ -1,31 +1,6 @@
-(ns demo-test
+(ns core-test
   (:require [clojure.test :refer :all]
-            [demo :refer :all]))
-
-
-(defn leap-year? [year]
-  (let [div-by? (partial
-                  (fn [num] (zero? (mod year num))))]
-
-    (or (div-by? 400)
-        (and (div-by? 4)
-             (not (div-by? 100))))))
-
-(defn div-by-100? [year]
-  (zero? (mod year 100)))
-
-(defn div-by-400? [year]
-  (zero? (mod year 400)))
-
-(defn div-by-4? [year]
-  (zero? (mod year 4)))
-
-(defn leap-year1? [year]
-  (if (< year 100)
-    (div-by-4? year)
-    (if (div-by-100? year)
-      (div-by-400? year)
-      (div-by-4? year))))
+            [core :refer :all]))
 
 (deftest a-year
   (testing "is not a leap year if not divisible by 4"
